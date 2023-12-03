@@ -7,6 +7,7 @@ use App\Http\Controllers\backsite\Order;
 use App\Http\Controllers\backsite\Dashboard;
 
 // User Manegement 
+use App\Http\Controllers\FileUploadController;
 use App\Http\Controllers\backsite\PostController;
 use App\Http\Controllers\frontsite\HomeController;
 use App\Http\Controllers\UserManegement\RoleController;
@@ -58,9 +59,15 @@ Route::middleware(['auth', 'verified'])->group(function () {
     
     // Payment 
     Route::get('/payment', [Order::class, 'payment'])->name('payment');
+    Route::post('/createorder', [Order::class, 'createorder'])->name('createorder');
 
 
 
 });
+
+// Filepond
+Route::post('uploads/tmpupload', [FileUploadController::class, 'tmpUpload'])->name('uploads.process');
+
+
 
 require __DIR__.'/auth.php';

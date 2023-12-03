@@ -16,9 +16,9 @@ const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute
  
 FilePond.create(inputElement).setOptions({
     server: {
-        process: './uploads/process',
-        headers: {
-            'X-CSRF-TOKEN': csrfToken,
-        }
-    }
+     url: "./uploads/tmpupload",
+     headers: {
+         'X-CSRF-TOKEN': csrfToken,
+     }
+   }
 });
