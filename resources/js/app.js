@@ -20,5 +20,6 @@ FilePond.create(inputElement).setOptions({
      headers: {
          'X-CSRF-TOKEN': csrfToken,
      }
+
    }
 });

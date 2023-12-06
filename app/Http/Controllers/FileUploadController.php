@@ -12,6 +12,7 @@ class FileUploadController extends Controller
     {
         
         if($request->file('buktibayar')){
+     
             $file = $request->file('buktibayar');
             $fileName   = Str::random(10) . '.' . $file->getClientOriginalExtension();
             $folder     = uniqid('images', true);
