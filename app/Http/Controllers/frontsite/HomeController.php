@@ -26,6 +26,7 @@ class HomeController extends Controller
         $menus = $menus->get();
 
         $cart = session()->get('cart');
+     
         if (!$cart) {
             $cart = [
                 'sumQty' => 0,
@@ -43,9 +44,13 @@ class HomeController extends Controller
                 'data' => $cart
             ];
         }
-        // dd($cart['data']);
+        
+        
+        $nomormeja = session()->get('nomormeja');
+        // catatan
+        $catatan = session()->get('catatan');
 
-        return view('pages.frontsite.index', compact('subkategoris', 'menus', 'cart'));
+        return view('pages.frontsite.index', compact('subkategoris', 'menus', 'cart', 'nomormeja', 'catatan'));
     }
 
     public function getDetailMenu($id)
@@ -66,7 +71,6 @@ class HomeController extends Controller
     {
 
        
-
         $cart = session()->get('cart');
 
         $id = $request->id_nemu;

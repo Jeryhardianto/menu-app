@@ -2,14 +2,18 @@
 
 namespace App\Http\Controllers\backsite;
 
+use App\Models\Pesanan;
+use App\Models\Temporary;
 use Illuminate\Http\Request;
+use App\Models\DetailPesanan;
 use Illuminate\Http\Response;
 use Illuminate\Validation\Rule;
+
 use App\Http\Controllers\Controller;
-use App\Models\Temporary;
-use Illuminate\Console\View\Components\Alert;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator; 
+use Illuminate\Console\View\Components\Alert;
+
 class Order extends Controller
 {
     public function index()
@@ -30,6 +34,11 @@ class Order extends Controller
             'nomormeja.required' =>  'Nomor Meja Wajib Diisi'
         ]);
 
+        // put nomor meja to session
+        session()->put('nomormeja', $request->nomormeja);
+        
+        // add session catatan multiple order
+        session()->put('catatan', $request->catatan);
 
         if ($validator->fails()) {
             return response()->json(['errors'=> $validator->errors()]);
@@ -51,25 +60,31 @@ class Order extends Controller
     {
         // get session cart
         $carts = session()->get('cart');
-        return view('pages.frontsite.order.payment', compact('carts'));
+        $catatan = session()->get('catatan');
+        // dd($catatan);
+        return view('pages.frontsite.order.payment', compact('carts','catatan'));
     }
 
     public function createorder(Request $request)
     {
-  
+       
         $tmp_file = Temporary::where('folder', $request->buktibayar)->first();
     
               // create validation select payment and upload payment
             $validator = Validator::make($request->all(), [
-                'metodebayar' => 'required|not_in:0',
+                'metodebayar' => 'not_in:0',
+                'buktibayar' => 'required',
             ],[
-                'metodebayar.required' =>  'Pilih Metode Pembayaran',
                 'metodebayar.not_in' =>  'Pilih Metode Pembayaran',
+                'buktibayar.required' =>  'Upload Bukti Pembayaran',
             ]);
-    
-            if ($validator) {
+         
+            if ($validator->fails()) {
                 return redirect()->route('payment')->withErrors($validator);
               }
+
+             
+
 
 
         if($tmp_file){
@@ -90,9 +105,47 @@ class Order extends Controller
             Storage::delete('images/temp/'.$tmp_file->folder.'/'.$tmp_file->file);
             // remove directory
             Storage::deleteDirectory('images/temp/'.$tmp_file->folder);
-            // direct to payment page with success message
-            return redirect()->route('paymentsuccess');
-        }
+            // create save to database table pesanan
+            $pesanan = Pesanan::create([
+                'id_user' => auth()->user()->id,
+                'no_transaksi' => 'TRX-'.time(),
+                'nomor_meja' => session()->get('nomormeja'),
+                'tanggal' => date('Y-m-d'),
+                'waktu' => date('H:i:s'),
+                'id_status' => 1,
+                'total' => $request->total,
+                'bukti_bayar' => $result,
+                'metode_pembayaran' => $request->metodebayar,
+            ]);
+
+            // create save to database detail pesanan
+            if($pesanan){
+                $catatan = session()->get('catatan');
+               
+                $j = 0;
+                foreach(session()->get('cart') as $key => $cart){
+                   DetailPesanan::create([
+                        'id_pesanan' => $pesanan->id,
+                        'id_menu' => $cart['id'],
+                        'jumlah' => $cart['qty'],
+                        'harga' => $cart['harga'],
+                        'subtotal' => $cart['qty'] * $cart['harga'],
+                        'deskripsi' => $catatan[$j]
+                   ]);
+                     $j++;
+                }
+            }
+
+                // delete session cart
+                session()->forget('cart');
+                session()->forget('nomormeja');
+                session()->forget('catatan');
+        
+                // direct to payment page with success message
+                return redirect()->route('paymentsuccess');
+            }
+
+        
         
 
     }

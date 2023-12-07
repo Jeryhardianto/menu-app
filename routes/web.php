@@ -60,7 +60,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
     // Payment 
     Route::get('/payment', [Order::class, 'payment'])->name('payment');
     Route::post('/createorder', [Order::class, 'createorder'])->name('createorder');
-    Route::post('/paymentsuccess', [Order::class, 'paymentsuccess'])->name('paymentsuccess');
+    Route::get('/paymentsuccess', [Order::class, 'paymentsuccess'])->name('paymentsuccess');
 
 });
 

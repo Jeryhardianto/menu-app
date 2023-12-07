@@ -20,6 +20,8 @@ class CreatePesanansTable extends Migration
             $table->foreign('id_status')->references('id')->on('status');
             $table->integer('total');
             $table->string('bukti_bayar', 255)->nullable();
+            $table->string('metode_pembayaran', 255)->nullable();
+            $table->string('catatan', 255)->nullable();
             $table->dateTime('created_at');
             $table->dateTime('updated_at');
             $table->dateTime('deleted_at')->nullable();

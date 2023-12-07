@@ -58,7 +58,11 @@
 
                                         <tr>
                                             <td colspan="4" align="right"><b>Total</b></td>
-                                            <td><b>{{ Rupiah($grandtotal) }}</b></td>
+                                            <td>
+                                                <b>{{ Rupiah($grandtotal) }}</b>
+                                                <input type="text" hidden id="total" name="total"
+                                                    value="{{ $grandtotal }}">
+                                            </td>
                                         </tr>
                                     </tbody>
                                 </table>
@@ -69,6 +73,16 @@
                     <div class="col-md-6">
                         <div class="card">
                             <div class="card-body">
+                                {{-- error validation --}}
+                                @if ($errors->any())
+                                    <div class="alert alert-danger">
+                                      
+                                            @foreach ($errors->all() as $key => $error)
+                                               <i class="fas fa-exclamation-circle"></i> {{ $error }}
+                                            @endforeach
+                                       
+                                    </div>
+                                @endif
                                 <h4>Metode Pembayaran</h4>
                                 <select class="form-control form-control-lg mb-4" name="metodebayar">
                                     <option value="0">-- Pilih Metode Pembayaran --</option>
@@ -172,27 +186,4 @@
     <!-- END: Content-->
 
 @endsection
-@push('javascript-internal')
-    <script>
-        
-        const error1 = '{{ $errors->first('buktibayar') }}';
-        if (error1) {
-            Swal.fire({
-            title: "Error",
-            text: error1,
-            icon: "error"
-            });
-        }
 
-        const error2 = '{{ $errors->first('metodebayar') }}';
-        if (error2) {
-            Swal.fire({
-            title: "Error",
-            text: error2,
-            icon: "error"
-            });
-        }
-
-
-    </script>
-@endpush

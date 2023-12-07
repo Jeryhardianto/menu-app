@@ -19,7 +19,7 @@
             <!-- Navbar Search -->
             <!-- Notifications Dropdown Menu -->
            {{-- if page payment hide button cart  --}}
-             @if (Route::currentRouteName() != 'payment')
+             @if (Route::currentRouteName() != 'payment' && Route::currentRouteName() != 'paymentsuccess')
             <button type="button" class="btn btn-warning" data-toggle="modal" data-target="#modalCart">
                 <i class="fas fa-shopping-cart"></i> 
                 <span class="badge badge-light">{{ $cart['sumQty'] }}</span>
@@ -50,7 +50,7 @@
 
         </ul>
     </nav>
-    @if (Route::currentRouteName() != 'payment')
+    @if (Route::currentRouteName() != 'payment' && Route::currentRouteName() != 'paymentsuccess')
     {{-- Modal Cart --}}
     <div class="modal fade" id="modalCart" tabindex="-1" role="dialog"  data-backdrop="static" aria-labelledby="modalCartTitle" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
@@ -66,7 +66,7 @@
                 <div class="form-group row">
                     <label for="nomormeja" class="col-sm-2 col-form-label">Nomor Meja</label>
                     <div class="col-sm-10">
-                      <input type="text" data-mask="00" class="form-control" name="nomormeja" id="nomormeja" placeholder="Nomor Meja">
+                      <input type="text" data-mask="00" class="form-control" name="nomormeja" id="nomormeja" value="{{ $nomormeja }}" placeholder="Nomor Meja">
                     </div>
                   </div>
                   @php
@@ -79,7 +79,7 @@
                             <div class="col-md-6">
                               {{ $item['nama']  }} x {{ $item['qty'] }} @ {{ Rupiah($item['harga'])  }}
                                 <input type="text" hidden name="id[]" value="{{ $item['id'] }}">
-                              <textarea class="form-control" name="catatan" id="catatan" placeholder="Catatan...." cols="20" rows="2"></textarea>
+                              <textarea class="form-control" name="catatan[]" id="catatan" placeholder="Catatan...." cols="20" rows="2">{{ $catatan }}</textarea>
                             </div>
                             <div class="col-md-6 ">
                             @php
