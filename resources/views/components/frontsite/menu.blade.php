@@ -31,7 +31,7 @@
                 <!-- Add icons to the links using the .nav-icon class
        with font-awesome or any other icon font library -->
                 <li class="nav-item">
-                    <a href="/" class="nav-link active">
+                    <a href="/" class="nav-link {{ set_active('homepage') }}">
                       
                         <i class="fas fa-utensils"></i>
                         <p>
@@ -42,7 +42,7 @@
                 @auth
                     @if (Auth::user()->role == 'Pelanggan')
                     <li class="nav-item">
-                        <a href="{{ route('order') }}" class="nav-link">
+                        <a href="{{ route('order') }}" class="nav-link {{ set_active(['order', 'paymentsuccess']) }}">
                             <i class="fas fa-shopping-cart"></i>
                             <p>
                                 Pesanan

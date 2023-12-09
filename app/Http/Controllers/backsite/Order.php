@@ -10,6 +10,7 @@ use Illuminate\Http\Response;
 use Illuminate\Validation\Rule;
 
 use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator; 
 use Illuminate\Console\View\Components\Alert;
@@ -18,8 +19,15 @@ class Order extends Controller
 {
     public function index()
     {
-    
-        return view('pages.frontsite.order.index');
+     
+        if(Auth::user()->role == 'Kasir'){
+            
+            $orders = Pesanan::orderBy('id', 'desc')->get();
+            return view('pages.backsite.order.index', compact('orders'));
+        }else{
+            $orders = Pesanan::where('id_user', auth()->user()->id)->orderBy('id', 'desc')->get();
+            return view('pages.frontsite.order.index', compact('orders'));
+        }
     }
 
     public function checkout(Request $request)
@@ -99,7 +107,7 @@ class Order extends Controller
             // get file from storage
             $file = Storage::get('images/temp/'.$tmp_file->folder.'/'.$tmp_file->file);
             // copy from storage to s3
-            $result = Storage::disk('s3')->put('payment/'.$tmp_file->file, $file);
+            Storage::disk('s3')->put('payment/'.$tmp_file->file, $file);
         
             // delete file and folder from storage
             Storage::delete('images/temp/'.$tmp_file->folder.'/'.$tmp_file->file);
@@ -114,7 +122,7 @@ class Order extends Controller
                 'waktu' => date('H:i:s'),
                 'id_status' => 1,
                 'total' => $request->total,
-                'bukti_bayar' => $result,
+                'bukti_bayar' => 'payment/'.$tmp_file->file,
                 'metode_pembayaran' => $request->metodebayar,
             ]);
 
@@ -148,6 +156,28 @@ class Order extends Controller
         
         
 
+    }
+
+    public function getDetailPesanan()
+    {
+        $id = request()->id;
+        $detail = DetailPesanan::where('id_pesanan', $id)->get();
+        
+        $details = [];
+        foreach($detail as $key => $value){
+            $details[$key]['id'] = $value->id;
+            $details[$key]['nama'] = $value->menu->nama_menu;
+            $details[$key]['jumlah'] = $value->jumlah;
+            $details[$key]['harga'] = $value->harga;
+            $details[$key]['subtotal'] = $value->subtotal;
+            $details[$key]['deskripsi'] = $value->deskripsi;
+        }
+
+
+        return response()->json([
+            'success' => true,
+            'data' => $details
+        ],Response::HTTP_OK);
     }
 
     public function paymentsuccess()

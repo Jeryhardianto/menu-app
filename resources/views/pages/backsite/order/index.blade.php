@@ -1,4 +1,4 @@
-@extends('layouts.frontsite')
+@extends('layouts.app')
 @section('title', 'Pesanan ')
 @section('content')
 
@@ -26,10 +26,11 @@
                         <div class="row">
                             <div class="col-md-12">
                                 <div class="table-responsive">
-                                    <table class="table table-bordered table-hover">
+                                    <table class="table table-bordered table-hover" id="listorder">
                                         <thead>
                                             <tr>
                                                 <th>No</th>
+                                                <th>Tanggal</th>
                                                 <th>Nomor Transaksi</th>
                                                 <th>Nomor Meja</th>
                                                 <th>Total</th>
@@ -41,6 +42,7 @@
                                             @foreach ($orders as $key => $item)
                                                 <tr>
                                                     <td>{{ $key + 1 }}</td>
+                                                    <td>{{ $item->created_at }}</td>
                                                     <td>
 
                                                         <a href="#" id="notransaksi" data-id="{{ $item->id }}"
@@ -71,7 +73,12 @@
                                                     <td>
                                                         <a href="#" id="detail" data-id="{{ $item->id }}"
                                                             data-notrx="{{ $item->no_transaksi }}"
-                                                            class="btn btn-info btn-sm">Detail</a>
+                                                            class="btn btn-info btn-sm">Detail</a> 
+                                                        <a href="#" id="buktibayar" 
+                                                            data-id="{{ $item->id }}"
+                                                            data-notrx="{{ $item->no_transaksi }}"
+                                                            data-buktibayar="{{ $item->bukti_bayar }}"
+                                                            class="btn btn-info btn-sm">Bukti Bayar</a>
                                                     </td>
                                                 </tr>
                                             @endforeach
@@ -117,11 +124,46 @@
     </div>
     {{-- End Modal --}}
 
+    {{-- Modal Bukti Bayar --}}
+    <div class="modal fade" id="buktibayarModal" tabindex="-1" aria-labelledby="buktibayarLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="buktibayarLabel">Bukti Bayar - <span id="notrx-b"></span></h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                  
+                </div>
+                <form action="" method="post" id="buktibayar-form">
+                    @csrf
+                    <div class="modal-footer">
+                        <select name="buktibayar"class="form-control form-control-lg" id="buktibayar">
+                            <option value="">Pilih Status</option>
+                            <option value="2">IN PROGRESS</option>
+                            <option value="3">REJECT</option>
+                            <option value="4">CANCEL</option>
+                            <option value="5">DEVLIVERED</option>
+                            <option value="6">COMPLETED</option>
+                        </select>
+                        <input type="text" name="id" id="id" hidden>
+                        <button type="submit" class="btn btn-primary" data-dismiss="modal">Simpan</button>
+
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    {{-- End Modal Bukti Bayar --}}
+
 
 @endsection
 @push('javascript-internal')
     <script>
         $(document).ready(function() {
+            $('#listorder').DataTable();
             function showOrderDetail(id, notrx) {
                 $('#detailpesanan').modal('show');
                 $('#notrx').html(notrx);
@@ -139,7 +181,6 @@
                         var html = '';
                         var total = 0;
                         $.each(response.data, function(key, value) {
-                            // console.log(value);
                             html += '<div class="card">';
                             html += '<div class="card-body">';
                             html += '<div class="row">';
@@ -150,7 +191,6 @@
                                 html += '<small class="badge badge-warning">Catatan : ' + value
                                     .deskripsi + '</small>';
                             }
-
                             html += '</div>';
                             html += '<div class="col-md-6">';
                             html += value.subtotal;
@@ -178,6 +218,49 @@
                 var notrx = $(this).data('notrx');
                 showOrderDetail(id, notrx);
             });
+
+            $('#buktibayar').click(function() {
+                var id = $(this).data('id');
+                var notrx = $(this).data('notrx'); 
+                var buktibayar = $(this).data('buktibayar'); 
+                $('#buktibayarModal').modal('show');
+                $('#notrx-b').html(notrx);
+                $('#id').val(id);
+                var html = '';
+                html += '<img src="{{ env('AWS_URL') }}' + buktibayar + '" class="img-fluid" alt="Bukti Bayar">';
+                
+                $('.modal-body').html(html);
+
+            });
+
+            $('#buktibayar-form').submit(function(e) {
+                // confirm when submit form use sweetalert
+                e.preventDefault();
+                var id = $('#id').val();
+                var buktibayar = $('#buktibayar').val();
+                if (buktibayar == '') {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Oops...',
+                        text: 'Pilih Status Bukti Bayar!',
+                    })
+                } else {
+                    Swal.fire({
+                        title: 'Apakah Anda Yakin?',
+                        text: "",
+                        icon: 'warning',
+                        showCancelButton: true,
+                        confirmButtonColor: '#3085d6',
+                        cancelButtonColor: '#d33',
+                    }).then((result) => {
+                        if (result.isConfirmed) {
+                           
+                        }
+                    })
+                }
+               
+            });
+
         });
     </script>
 @endpush

@@ -17,6 +17,12 @@ class SubkategoriTableSeeder extends Seeder
     {
         DB::table('subkategori')->insert([
             [
+                'id_kategori' => 2,
+                'subketagori' => 'Best Seller Minuman',
+                'created_at' => now(),
+                'updated_at' => now(),
+            ],
+            [
                 'id_kategori' => 1,
                 'subketagori' => 'Nasi',
                 'created_at' => now(),
@@ -34,12 +40,7 @@ class SubkategoriTableSeeder extends Seeder
                 'created_at' => now(),
                 'updated_at' => now(),
             ],
-            [
-                'id_kategori' => 2,
-                'subketagori' => 'Best Seller Minuman',
-                'created_at' => now(),
-                'updated_at' => now(),
-            ],
+        
             [
                 'id_kategori' => 2,
                 'subketagori' => 'Non Kopi',

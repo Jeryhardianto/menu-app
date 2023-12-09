@@ -3,11 +3,15 @@
 
 namespace App\Models;
 
+
+use App\Models\User;
+use App\Models\Status;
+use App\Models\DetailPesanan;
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Testing\Fluent\Concerns\Has;
+use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\SoftDeletes;
-use Illuminate\Testing\Fluent\Concerns\Has;
 
 class Pesanan extends Model
 {
@@ -34,8 +38,13 @@ class Pesanan extends Model
         return $this->belongsTo(User::class, 'id_pengguna');
     }
 
-    public function status()
+    public function statusLabel()
     {
         return $this->belongsTo(Status::class, 'id_status');
+    }
+
+    public function detailPesanan()
+    {
+        return $this->hasMany(DetailPesanan::class, 'id_pesanan');
     }
 }

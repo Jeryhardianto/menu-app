@@ -12,4 +12,10 @@ class DetailPesanan extends Model
     protected $table = 'detail_pesanans';
     protected $guarded = ['id'];
 
+
+    public function menu()
+    {
+        return $this->belongsTo(Menu::class, 'id_menu', 'id');
+    }
+
 }

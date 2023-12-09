@@ -9,7 +9,7 @@
             <div class="container-fluid">
                 <div class="row mb-2">
                     <div class="col-sm-6">
-                        <h1 class="m-0">Pesanan sudah dibuat </h1>
+                        <h1 class="m-0"> </h1>
                     </div><!-- /.col -->
 
                 </div><!-- /.row -->
@@ -21,7 +21,17 @@
         <section class="content">
          
           <div class="container-fluid">
-             
+                <div class="card">
+                    <div class="card-body">
+                        {{-- create icon checklist in midle this card --}}
+                        <div class="text-center">
+                            <i class="fas fa-check-circle fa-5x text-success"></i>
+                            <br>
+                            <h1>Pesanan sudah dibuat</h1>
+                            <a href="/order" class="btn btn-primary">Lihat pesanan</a>
+                        </div>
+                    </div>
+                </div>
             </div>
   
           </div>

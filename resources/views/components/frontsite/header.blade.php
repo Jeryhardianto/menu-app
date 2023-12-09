@@ -19,7 +19,7 @@
             <!-- Navbar Search -->
             <!-- Notifications Dropdown Menu -->
            {{-- if page payment hide button cart  --}}
-             @if (Route::currentRouteName() != 'payment' && Route::currentRouteName() != 'paymentsuccess')
+            @unless (in_array(Route::currentRouteName(), ['payment', 'paymentsuccess', 'order']))
             <button type="button" class="btn btn-warning" data-toggle="modal" data-target="#modalCart">
                 <i class="fas fa-shopping-cart"></i> 
                 <span class="badge badge-light">{{ $cart['sumQty'] }}</span>
@@ -50,7 +50,7 @@
 
         </ul>
     </nav>
-    @if (Route::currentRouteName() != 'payment' && Route::currentRouteName() != 'paymentsuccess')
+    @unless (in_array(Route::currentRouteName(), ['payment', 'paymentsuccess', 'order']))
     {{-- Modal Cart --}}
     <div class="modal fade" id="modalCart" tabindex="-1" role="dialog"  data-backdrop="static" aria-labelledby="modalCartTitle" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered modal-lg" role="document">

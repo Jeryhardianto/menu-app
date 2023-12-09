@@ -36,30 +36,18 @@
                         </p>
                     </a>
                 </li> 
-                @can('post_show')
+          
                 <li class="nav-item">
-                    <a href="{{ route('post.index') }}" class="nav-link {{ set_active(['post.index', 'post.show', 'post.create','post.edit']) }}">
-                        <i class="nav-icon fas fa-newspaper"></i>
+                    <a href="{{ route('order') }}" class="nav-link {{ set_active(['order', 'paymentsuccess']) }}">
+                        <i class="fas fa-shopping-cart"></i>
                         <p>
-                            Post
-                        </p>
-                    </a>
-                </li>
-                @endcan
-
-                <li class="nav-header">EXAMPLES</li>
-                <li class="nav-item">
-                    <a href="pages/calendar.html" class="nav-link">
-                        <i class="nav-icon far fa-calendar-alt"></i>
-                        <p>
-                            Calendar
-                            <span class="badge badge-info right">2</span>
+                            Pesanan
                         </p>
                     </a>
                 </li>
 
 
-                @can('role_show','user_show')
+          
                 <li class="nav-header">Manegement User</li>
                 <li class="nav-item">
                     <a href="{{ route('users.index') }}" class="nav-link {{ set_active(['users.index', 'users.show','users.create','users.edit']) }}">
@@ -77,8 +65,7 @@
                         </p>
                     </a>
                 </li>   
-                @endcan
-            
+         
 
              
                 
