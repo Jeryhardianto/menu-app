@@ -45,8 +45,7 @@
                                                     <td>{{ $item->created_at }}</td>
                                                     <td>
 
-                                                        <a href="#" id="notransaksi" data-id="{{ $item->id }}"
-                                                            data-notrx="{{ $item->no_transaksi }}">
+                                                        <a href="#" id="notransaksi" onclick="noTransaksi('{{ $item->id }}','{{ $item->no_transaksi }}')">
                                                             {{ $item->no_transaksi }}
                                                         </a>
                                                     </td>
@@ -61,9 +60,11 @@
                                                         @elseif($item->statusLabel->status == 'REJECT')
                                                             <span class="badge badge-danger">Pesanan Ditolak</span>
                                                             <br>
-                                                            <span class="badge badge-danger">Alasan: Bukti pembayaran tidak valid</span>
+                                                            <span class="badge badge-danger">Alasan: {{ $item->catatan }}</span>
                                                         @elseif($item->statusLabel->status == 'CANCEL')
                                                             <span class="badge badge-danger">Pesanan Dibatalkan</span>
+                                                            <br>
+                                                            <span class="badge badge-danger">Alasan: {{ $item->catatan }}</span>
                                                         @elseif($item->statusLabel->status == 'DEVLIVERED')
                                                             <span class="badge badge-success">Pesanan Diterima</span>
                                                         @elseif($item->statusLabel->status == 'COMPLETED')
@@ -71,13 +72,9 @@
                                                         @endif
                                                     </td>
                                                     <td>
-                                                        <a href="#" id="detail" data-id="{{ $item->id }}"
-                                                            data-notrx="{{ $item->no_transaksi }}"
-                                                            class="btn btn-info btn-sm">Detail</a> 
-                                                        <a href="#" id="buktibayar" 
-                                                            data-id="{{ $item->id }}"
-                                                            data-notrx="{{ $item->no_transaksi }}"
-                                                            data-buktibayar="{{ $item->bukti_bayar }}"
+                                                        <a href="#" id="detail" onclick="detail('{{ $item->id }}','{{ $item->no_transaksi }}')"
+                                                            class="btn btn-info btn-sm">Detail</a>
+                                                        <a href="#" id="buktibayar" onclick="buktibayar('{{ $item->id }}','{{ $item->no_transaksi }}','{{ $item->bukti_bayar }}')" 
                                                             class="btn btn-info btn-sm">Bukti Bayar</a>
                                                     </td>
                                                 </tr>
@@ -126,6 +123,7 @@
 
     {{-- Modal Bukti Bayar --}}
     <div class="modal fade" id="buktibayarModal" tabindex="-1" aria-labelledby="buktibayarLabel" aria-hidden="true">
+        <form id="buktibayarform">
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
@@ -137,10 +135,9 @@
                 <div class="modal-body">
                   
                 </div>
-                <form action="" method="post" id="buktibayar-form">
-                    @csrf
+                
                     <div class="modal-footer">
-                        <select name="buktibayar"class="form-control form-control-lg" id="buktibayar">
+                        <select name="status" class="form-control form-control-lg" id="status">
                             <option value="">Pilih Status</option>
                             <option value="2">IN PROGRESS</option>
                             <option value="3">REJECT</option>
@@ -149,12 +146,14 @@
                             <option value="6">COMPLETED</option>
                         </select>
                         <input type="text" name="id" id="id" hidden>
-                        <button type="submit" class="btn btn-primary" data-dismiss="modal">Simpan</button>
+                    
+                        <textarea class="form-control" name="alasan" required id="alasan" cols="30" rows="2"></textarea>
 
+                        <button type="button" onclick="updateStatus()" class="btn btn-primary"  data-dismiss="modal">Simpan</button>
                     </div>
-                </form>
+                </div>
             </div>
-        </div>
+        </form>
     </div>
     {{-- End Modal Bukti Bayar --}}
 
@@ -163,8 +162,11 @@
 @push('javascript-internal')
     <script>
         $(document).ready(function() {
-            $('#listorder').DataTable();
-            function showOrderDetail(id, notrx) {
+            $('#alasan').hide();
+            $('#listorder').DataTable(); 
+        });
+
+        function showOrderDetail(id, notrx) {
                 $('#detailpesanan').modal('show');
                 $('#notrx').html(notrx);
 
@@ -185,7 +187,11 @@
                             html += '<div class="card-body">';
                             html += '<div class="row">';
                             html += '<div class="col-md-6">';
-                            html += value.nama + ' x ' + value.jumlah + ' @ ' + value.harga;
+                                html += value.nama + ' x ' + value.jumlah + ' @ ' + Number(value.harga).toLocaleString('id-ID', {
+                                style: 'currency',
+                                minimumFractionDigits: 0,
+                                currency: 'IDR'
+                            });
                             if (value.deskripsi != null) {
                                 html += '<br>';
                                 html += '<small class="badge badge-warning">Catatan : ' + value
@@ -193,7 +199,11 @@
                             }
                             html += '</div>';
                             html += '<div class="col-md-6">';
-                            html += value.subtotal;
+                                html += Number(value.subtotal).toLocaleString('id-ID', {
+                                style: 'currency',
+                                minimumFractionDigits: 0,
+                                currency: 'IDR'
+                            });
                             html += '</div>';
                             html += '</div>';
                             html += '</div>';
@@ -202,27 +212,103 @@
                             total += value.subtotal;
                         });
                         $('.modal-body').html(html);
+                        total = total.toLocaleString('id-ID', {
+                                style: 'currency',
+                                minimumFractionDigits: 0,
+                                currency: 'IDR'
+                        });
                         $('#total').html('Total : ' + total);
                     }
                 });
             }
 
-            $('#notransaksi').click(function() {
-                var id = $(this).data('id');
-                var notrx = $(this).data('notrx');
+        function noTransaksi(id, notrx) {
+                var id = id;
+                var notrx = notrx;
                 showOrderDetail(id, notrx);
-            });
+        }
 
-            $('#detail').click(function() {
-                var id = $(this).data('id');
-                var notrx = $(this).data('notrx');
+        function detail(id, notrx) {
+                var id = id;
+                var notrx = notrx;
                 showOrderDetail(id, notrx);
-            });
+        }
 
-            $('#buktibayar').click(function() {
-                var id = $(this).data('id');
-                var notrx = $(this).data('notrx'); 
-                var buktibayar = $(this).data('buktibayar'); 
+        function updateStatus() {
+            var id = $('#id').val();
+            var status = $('#status').val();
+            var alasan = $('#alasan').val();
+
+
+            // validation status
+            if (status == '') {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Gagal',
+                    text: 'Status harus dipilih',
+                    showConfirmButton: false,
+                    timer: 1500
+                });
+                return false;
+            }
+
+            if(status == 3 || status == 4) {
+                if(alasan == '') {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Gagal',
+                        text: 'Alasan harus diisi',
+                        showConfirmButton: false,
+                        timer: 1500
+                    });
+                    $('#alasan').addClass('is-invalid');
+                    return false;
+                }
+            }
+
+            $.ajax({
+                url: "{{ route('updatestatus') }}",
+                type: "PATCH",
+                data: {
+                    id: id,
+                    status: status,
+                    alasan: alasan,
+                    _token: "{{ csrf_token() }}"
+                },
+                success: function(response) {
+                    if (response.success) {
+                        Swal.fire({
+                            icon: 'success',
+                            title: 'Berhasil',
+                            text: response.message,
+                            showConfirmButton: false,
+                            timer: 1500
+                        })
+                        .then(function() {
+                            location.reload();
+                        });
+                    } else {
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Gagal',
+                            text: response.message,
+                            showConfirmButton: false,
+                        });
+                    }
+                }
+            });
+        }
+
+        $('#status').change(function() {
+            var status = $(this).val();
+            if (status == 3 || status == 4) {
+                $('#alasan').show();
+            } else {
+                $('#alasan').hide();
+            }
+        });
+
+        function buktibayar(id, notrx, buktibayar) {
                 $('#buktibayarModal').modal('show');
                 $('#notrx-b').html(notrx);
                 $('#id').val(id);
@@ -231,36 +317,6 @@
                 
                 $('.modal-body').html(html);
 
-            });
-
-            $('#buktibayar-form').submit(function(e) {
-                // confirm when submit form use sweetalert
-                e.preventDefault();
-                var id = $('#id').val();
-                var buktibayar = $('#buktibayar').val();
-                if (buktibayar == '') {
-                    Swal.fire({
-                        icon: 'error',
-                        title: 'Oops...',
-                        text: 'Pilih Status Bukti Bayar!',
-                    })
-                } else {
-                    Swal.fire({
-                        title: 'Apakah Anda Yakin?',
-                        text: "",
-                        icon: 'warning',
-                        showCancelButton: true,
-                        confirmButtonColor: '#3085d6',
-                        cancelButtonColor: '#d33',
-                    }).then((result) => {
-                        if (result.isConfirmed) {
-                           
-                        }
-                    })
-                }
-               
-            });
-
-        });
+            }
     </script>
 @endpush

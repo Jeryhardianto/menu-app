@@ -26,7 +26,7 @@
                         <div class="row">
                             <div class="col-md-12">
                                 <div class="table-responsive">
-                                    <table class="table table-bordered table-hover">
+                                    <table class="table table-bordered table-hover" id="listpesanan">
                                         <thead>
                                             <tr>
                                                 <th>No</th>
@@ -40,11 +40,9 @@
                                         <tbody>
                                             @foreach ($orders as $key => $item)
                                                 <tr>
-                                                    <td>{{ $key + 1 }}</td>
+                                                    <td>{{ $loop->iteration }}</td>
                                                     <td>
-
-                                                        <a href="#" id="notransaksi" data-id="{{ $item->id }}"
-                                                            data-notrx="{{ $item->no_transaksi }}">
+                                                        <a href="#" id="notransaksi" onclick="noTransaksi('{{ $item->id }}','{{ $item->no_transaksi }}')">
                                                             {{ $item->no_transaksi }}
                                                         </a>
                                                     </td>
@@ -69,12 +67,12 @@
                                                         @endif
                                                     </td>
                                                     <td>
-                                                        <a href="#" id="detail" data-id="{{ $item->id }}"
-                                                            data-notrx="{{ $item->no_transaksi }}"
+                                                        <a href="#" id="detail" onclick="detail('{{ $item->id }}','{{ $item->no_transaksi }}')"
                                                             class="btn btn-info btn-sm">Detail</a>
                                                     </td>
                                                 </tr>
                                             @endforeach
+                                          
                                         </tbody>
                                     </table>
                                 </div>
@@ -122,7 +120,10 @@
 @push('javascript-internal')
     <script>
         $(document).ready(function() {
-            function showOrderDetail(id, notrx) {
+            $('#listpesanan').DataTable();
+        });
+
+        function showOrderDetail(id, notrx) {
                 $('#detailpesanan').modal('show');
                 $('#notrx').html(notrx);
 
@@ -144,7 +145,11 @@
                             html += '<div class="card-body">';
                             html += '<div class="row">';
                             html += '<div class="col-md-6">';
-                            html += value.nama + ' x ' + value.jumlah + ' @ ' + value.harga;
+                            html += value.nama + ' x ' + value.jumlah + ' @ ' + Number(value.harga).toLocaleString('id-ID', {
+                                style: 'currency',
+                                minimumFractionDigits: 0,
+                                currency: 'IDR'
+                            });
                             if (value.deskripsi != null) {
                                 html += '<br>';
                                 html += '<small class="badge badge-warning">Catatan : ' + value
@@ -153,31 +158,41 @@
 
                             html += '</div>';
                             html += '<div class="col-md-6">';
-                            html += value.subtotal;
+                            html += Number(value.subtotal).toLocaleString('id-ID', {
+                                style: 'currency',
+                                minimumFractionDigits: 0,
+                                currency: 'IDR'
+                            });
                             html += '</div>';
                             html += '</div>';
                             html += '</div>';
                             html += '</div>';
                             // sum subtotal
                             total += value.subtotal;
+                          
                         });
                         $('.modal-body').html(html);
+                        total = total.toLocaleString('id-ID', {
+                                style: 'currency',
+                                minimumFractionDigits: 0,
+                                currency: 'IDR'
+                        });
+
                         $('#total').html('Total : ' + total);
                     }
                 });
             }
 
-            $('#notransaksi').click(function() {
-                var id = $(this).data('id');
-                var notrx = $(this).data('notrx');
+        function noTransaksi(id, notrx) {
+                var id = id;
+                var notrx = notrx;
                 showOrderDetail(id, notrx);
-            });
+        }
 
-            $('#detail').click(function() {
-                var id = $(this).data('id');
-                var notrx = $(this).data('notrx');
+        function detail(id, notrx) {
+                var id = id;
+                var notrx = notrx;
                 showOrderDetail(id, notrx);
-            });
-        });
+        }
     </script>
 @endpush

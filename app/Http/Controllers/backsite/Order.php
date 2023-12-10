@@ -152,10 +152,6 @@ class Order extends Controller
                 // direct to payment page with success message
                 return redirect()->route('paymentsuccess');
             }
-
-        
-        
-
     }
 
     public function getDetailPesanan()
@@ -183,5 +179,27 @@ class Order extends Controller
     public function paymentsuccess()
     {
         return view('pages.frontsite.order.paymentsuccess');
+    }
+
+    // Updated status order
+    public function updatestatus(Request $request)
+    {
+        
+        $pesanan = Pesanan::find($request->id);
+        $pesanan->id_status = $request->status;
+        $pesanan->catatan = $request->alasan;
+        $pesanan->save();
+
+        if($pesanan){
+            return response()->json([
+                'success' => true,
+                'message' => 'Status Pesanan Berhasil Diubah'
+            ],Response::HTTP_OK);
+        }else{
+            return response()->json([
+                'success' => false,
+                'message' => 'Status Pesanan Gagal Diubah'
+            ],Response::HTTP_OK);
+        }
     }
 }

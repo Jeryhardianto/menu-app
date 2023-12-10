@@ -57,6 +57,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
     // Order
     Route::get('/order', [Order::class, 'index'])->name('order');
     Route::post('/orderdetail', [Order::class, 'getDetailPesanan'])->name('orderdetail');
+    Route::patch('/order/status', [Order::class, 'updatestatus'])->name('updatestatus');
     
     // Payment 
     Route::get('/payment', [Order::class, 'payment'])->name('payment');
