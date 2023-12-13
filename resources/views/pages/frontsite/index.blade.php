@@ -29,7 +29,7 @@
                     <div class="col-sm-6 col-md-4">
                       
                         <div class="card">
-                            <img src="{{ $ms->gambar }}" class="card-img-top"
+                            <img src="{{ env('AWS_URL') }}{{ $ms->gambar }}" width="200" class="card-img-top"
                                 alt="...">
                             <div class="card-body">
                                 <h5 class="card-title "><b>{{ $ms->nama_menu }}</b></h5>

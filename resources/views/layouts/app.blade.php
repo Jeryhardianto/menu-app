@@ -4,6 +4,7 @@
 
     @include('includes.backsite.meta')
     <title>@yield('title') | {{ env('APP_NAME') }}</title>
+    @vite('resources/js/app.js')
     @stack('before-style')
       @include('includes.backsite.style')
     @stack('after-style')

@@ -139,11 +139,15 @@
                     <div class="modal-footer">
                         <select name="status" class="form-control form-control-lg" id="status">
                             <option value="">Pilih Status</option>
+                           @if (Auth::user()->role == 'Kasir')
                             <option value="2">IN PROGRESS</option>
                             <option value="3">REJECT</option>
                             <option value="4">CANCEL</option>
+                            @elseif (Auth::user()->role == 'Kitchen')
                             <option value="5">DEVLIVERED</option>
                             <option value="6">COMPLETED</option>
+                           @endif
+                           
                         </select>
                         <input type="text" name="id" id="id" hidden>
                     

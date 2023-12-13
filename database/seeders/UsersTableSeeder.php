@@ -23,6 +23,7 @@ class UsersTableSeeder extends Seeder
             'password' => bcrypt('password'), // password
             'alamat' => '123 Main Street',
             'telepon' => '1234567890',
+            'role' => 'Owner'
         ]);
 
         \App\Models\User::factory()->create([
@@ -33,6 +34,7 @@ class UsersTableSeeder extends Seeder
             'password' => bcrypt('password'), // password
              'alamat' => '123 Main Street',
             'telepon' => '1234567890',
+            'role' => 'Kasir'
         ]);
 
         \App\Models\User::factory()->create([
@@ -43,6 +45,7 @@ class UsersTableSeeder extends Seeder
             'password' => bcrypt('password'), // password
             'alamat' => '123 Main Street',
             'telepon' => '1234567890',
+            'role' => 'Kitchen'
         ]);
 
         \App\Models\User::factory()->create([
@@ -53,6 +56,7 @@ class UsersTableSeeder extends Seeder
             'password' => bcrypt('password'), // password
             'alamat' => '123 Main Street',
             'telepon' => '1234567890',
+            'role' => 'Pelanggan'
         ]);
 
         

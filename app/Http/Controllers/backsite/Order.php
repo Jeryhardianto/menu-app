@@ -20,7 +20,7 @@ class Order extends Controller
     public function index()
     {
      
-        if(Auth::user()->role == 'Kasir'){
+        if (in_array(Auth::user()->role, ['Kasir', 'Kitchen'])) {
             
             $orders = Pesanan::orderBy('id', 'desc')->get();
             return view('pages.backsite.order.index', compact('orders'));
@@ -90,18 +90,13 @@ class Order extends Controller
             if ($validator->fails()) {
                 return redirect()->route('payment')->withErrors($validator);
               }
-
-             
-
-
-
+          
         if($tmp_file){
 
             // validation file
             if($tmp_file->file == ''){
                 return redirect()->route('payment')->withErrors('Upload Bukti Pembayaran');
             }
-
 
 
             // get file from storage

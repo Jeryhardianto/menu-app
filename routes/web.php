@@ -1,12 +1,15 @@
 <?php
 
-use Illuminate\Support\Facades\Route;
+use Illuminate\Routing\Router;
 
 // Backsite
-use App\Http\Controllers\backsite\Order;
-use App\Http\Controllers\backsite\Dashboard;
+use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\backsite\Menu;
 
 // User Manegement 
+use App\Http\Controllers\backsite\Order;
+use App\Http\Controllers\backsite\Laporan;
+use App\Http\Controllers\backsite\Dashboard;
 use App\Http\Controllers\FileUploadController;
 use App\Http\Controllers\backsite\PostController;
 use App\Http\Controllers\frontsite\HomeController;
@@ -63,6 +66,12 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/payment', [Order::class, 'payment'])->name('payment');
     Route::post('/createorder', [Order::class, 'createorder'])->name('createorder');
     Route::get('/paymentsuccess', [Order::class, 'paymentsuccess'])->name('paymentsuccess');
+
+    // Laporan
+    Route::get('/laporan', [Laporan::class, 'index'])->name('laporan');
+
+    // Menu
+    Route::resource('menu', Menu::class);
 
 });
 

@@ -36,7 +36,7 @@
                         </p>
                     </a>
                 </li> 
-          
+                @if (in_array(Auth::user()->role, ['Kasir', 'Kitchen']))
                 <li class="nav-item">
                     <a href="{{ route('order') }}" class="nav-link {{ set_active(['order', 'paymentsuccess']) }}">
                         <i class="fas fa-shopping-cart"></i>
@@ -45,9 +45,48 @@
                         </p>
                     </a>
                 </li>
+                    
+                @endif
 
+            
 
-          
+                @if (in_array(Auth::user()->role, ['Owner']))
+                <li class="nav-item">
+                    <a href="{{ route('laporan') }}" class="nav-link {{ set_active(['laporan']) }}">
+                        <i class="nav-icon far fa-file-alt"></i>
+                        <p>
+                            Laporan
+                        </p>
+                    </a>
+                </li>
+
+                
+                <li class="nav-header">Master Data</li>
+                <li class="nav-item">
+                    <a href="{{ route('menu.index') }}" class="nav-link {{ set_active(['menu.index', 'menu.show','menu.create','menu.edit']) }}">
+                        <i class="nav-icon fas fa-user"></i>
+                        <p>
+                            Data Menu
+                        </p>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="{{ route('users.index') }}" class="nav-link {{ set_active(['users.index', 'users.show','users.create','users.edit']) }}">
+                        <i class="nav-icon fas fa-user"></i>
+                        <p>
+                            Data Kategori
+                        </p>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="{{ route('users.index') }}" class="nav-link {{ set_active(['users.index', 'users.show','users.create','users.edit']) }}">
+                        <i class="nav-icon fas fa-user"></i>
+                        <p>
+                            Data Sub Kategori
+                        </p>
+                    </a>
+                </li>
+
                 <li class="nav-header">Manegement User</li>
                 <li class="nav-item">
                     <a href="{{ route('users.index') }}" class="nav-link {{ set_active(['users.index', 'users.show','users.create','users.edit']) }}">
@@ -65,7 +104,7 @@
                         </p>
                     </a>
                 </li>   
-         
+                @endif
 
              
                 
