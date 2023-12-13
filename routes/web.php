@@ -10,6 +10,7 @@ use App\Http\Controllers\backsite\Menu;
 use App\Http\Controllers\backsite\Order;
 use App\Http\Controllers\backsite\Laporan;
 use App\Http\Controllers\backsite\Dashboard;
+use App\Http\Controllers\backsite\Subkategori;
 use App\Http\Controllers\FileUploadController;
 use App\Http\Controllers\backsite\PostController;
 use App\Http\Controllers\frontsite\HomeController;
@@ -72,6 +73,8 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
     // Menu
     Route::resource('menu', Menu::class);
+    // Subkategori
+    Route::resource('subkategori', Subkategori::class);
 
 });
 

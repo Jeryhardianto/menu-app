@@ -9,12 +9,12 @@
             <div class="container-fluid">
                 <div class="row mb-2">
                     <div class="col-sm-6">
-                        <h1 class="m-0">Tambah User</h1>
+                        <h1 class="m-0">Tambah Menu</h1>
                     </div><!-- /.col -->
                     <div class="col-sm-6">
                         <ol class="breadcrumb float-sm-right">
-                            <li class="breadcrumb-item">User</a></li>
-                            <li class="breadcrumb-item active">Tambah User</li>
+                            <li class="breadcrumb-item">Menu</a></li>
+                            <li class="breadcrumb-item active">Tambah Menu</li>
                         </ol>
                     </div><!-- /.col -->
                 </div><!-- /.row -->

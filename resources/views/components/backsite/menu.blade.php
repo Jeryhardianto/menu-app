@@ -70,19 +70,12 @@
                         </p>
                     </a>
                 </li>
+           
                 <li class="nav-item">
-                    <a href="{{ route('users.index') }}" class="nav-link {{ set_active(['users.index', 'users.show','users.create','users.edit']) }}">
+                    <a href="{{ route('subkategori.index') }}" class="nav-link {{ set_active(['subkategori.index', 'subkategori.show','subkategori.create','subkategori.edit']) }}">
                         <i class="nav-icon fas fa-user"></i>
                         <p>
-                            Data Kategori
-                        </p>
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a href="{{ route('users.index') }}" class="nav-link {{ set_active(['users.index', 'users.show','users.create','users.edit']) }}">
-                        <i class="nav-icon fas fa-user"></i>
-                        <p>
-                            Data Sub Kategori
+                            Data Subkategori
                         </p>
                     </a>
                 </li>
