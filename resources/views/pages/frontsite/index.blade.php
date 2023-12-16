@@ -20,14 +20,14 @@
         <!-- Main content -->
         <section class="content">
             <div class="container-fluid">
-                <a href="/" class="btn btn-primary justify-between mb-3">Semua</a>    
+                <a href="/" class="btn btn-primary justify-between mb-3">Semua</a>
                 @foreach ($subkategoris as $sk )
                 <a href="{{ '?subkategori='.$sk->id }}" class="btn btn-primary justify-between mb-3">{{ $sk->subketagori }}</a>
                 @endforeach
                 <div class="row">
                     @foreach ($menus as $ms )
                     <div class="col-sm-6 col-md-4">
-                      
+
                         <div class="card">
                             <img src="{{ env('AWS_URL') }}{{ $ms->gambar }}" width="200" class="card-img-top"
                                 alt="...">
@@ -36,15 +36,15 @@
                                 <br>
                                 <p><b>{{ Rupiah($ms->harga) }}</b></p>
                                 <button type="button" id="order" class="btn btn-warning btn-block text-white" onclick="getMenu(<?= $ms->id ?>)" data-toggle="modal" data-target="#modalOrder">
-                                    <i class="fas fa-shopping-cart"></i> Order 
+                                    <i class="fas fa-shopping-cart"></i> Order
                                 </button>
                                 <br>
                                 <span class="badge badge-danger">{{ $ms->GetSubkategori->GetKategori->kategori }}</span>
                                 <span class="badge badge-primary">{{ $ms->GetSubkategori->subketagori }}</span>
-                                
+
                             </div>
                         </div>
-                 
+
                     </div>
                     @endforeach
                 </div>
@@ -52,52 +52,49 @@
 
         </section>
         <!-- /.content -->
+        {{-- Modal Order --}}
+        <!-- Modal -->
+        <div class="modal fade" id="modalOrder"  role="dialog" aria-labelledby="modalOrderTitle" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="modalOrderTitle">Detail Menu</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="row">
+                            <div class="col">
+                                <span id="gambardetail"> </span>
+                            </div>
+                            <div class="col">
+                                <h3><span id="judul"></span></h3>
+                                <p><span id="deskripsi"></span></p>
+                                <p><b><span id="harga"></span></b></p>
+                                <form action="{{ route('addtocart') }}" method="post">
+                                    @csrf
+                                    <div class="input-group mb-3 row">
+                                        <input type="text" id="id_menu" hidden name="id_nemu">
+                                        <input type="text" id="qty" data-mask="000" name="qty" class="form-control col-xs-2" placeholder="Qty" value="0">
+                                        <div class="input-group-append">
+                                            <button  class="btn btn-warning text-white" type="submit" id="button-addon2"><i class="fas fa-shopping-cart"></i> Tambah</button>
+                                        </div>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+            {{-- End Modal Order --}}
     </div>
     <!-- END: Content-->
 
-    {{-- Modal Order --}}
-    <!-- Modal -->
-        <div class="modal fade" id="modalOrder"  role="dialog" aria-labelledby="modalOrderTitle" aria-hidden="true">
-            <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                <h5 class="modal-title" id="modalOrderTitle">Detail Menu</h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
-                </div>
-                <div class="modal-body">
-                   <div class="row">
-                     <div class="col">
-                        <span id="gambardetail">
-                          
-                        </span>
-                     </div>
-                        <div class="col">
-                            <h3><span id="judul"></span></h3>
-                            <p><span id="deskripsi"></span></p>
-                            <p><b><span id="harga"></span></b></p>
-
-                            <form action="{{ route('addtocart') }}" method="post">
-                            @csrf
-                            
-                                <div class="input-group mb-3 row">
-                                    <input type="text" id="id_menu" hidden name="id_nemu">
-                                    <input type="text" id="qty" data-mask="000" name="qty" class="form-control col-xs-2" placeholder="Qty" value="0">
-                                    <div class="input-group-append">
-                                    <button  class="btn btn-warning text-white" type="submit" id="button-addon2"><i class="fas fa-shopping-cart"></i> Tambah</button>
-                                    </div>
-                                </div>
-                           </form>
-                   </div>
-                </div>
-            </div>
-            </div>
-        </div>
-    {{-- End Modal Order --}}
 
 
-   
+
 
 
 @endsection
@@ -127,7 +124,7 @@
             var data = {
                 id: id
             };
-
+            const aws_url = '{{ env('AWS_URL') }}';
             const result = ajaxPromise(url,data,method);
 
             result.then(function(response) {
@@ -135,11 +132,11 @@
                 $('#judul').html(response.data.nama_menu);
                 $('#deskripsi').html(response.data.deskripsi);
                 $('#harga').html(response.data.harga);
-                $('#gambardetail').html('<img width="100%" src="'+response.data.gambar+'" class="img-fluid" alt="Responsive image">');
+                $('#gambardetail').html('<img width="100%" src="'+aws_url+''+response.data.gambar+'" class="img-fluid" alt="Responsive image">');
             });
 
         }
-       
+
 
         function checkout() {
             var url = '{{ route('checkout') }}';
@@ -160,13 +157,13 @@
                                 icon: 'error',
                                 confirmButtonText: 'OK'
                             })
-                            
+
                         }else{
                             window.location.href = '{{ route('login') }}';
                         }
-                      
+
                     }
-                  
+
                 })
                 .catch(function(error) {
                     console.log('Error :'+ error);
@@ -185,7 +182,7 @@
                 $('#btn-checkout').attr('disabled', false);
             }
         });
-        
+
 
 
 
@@ -209,8 +206,8 @@
                 })
             });
         });
-  
-        
+
+
 
 </script>
 @endpush

@@ -8,15 +8,15 @@
 
         <form method="POST" action="{{ route('password.update') }}">
             @csrf
-
+            <h3 class="text-lg">Masukan password baru</h3>
             <!-- Password Reset Token -->
             <input type="hidden" name="token" value="{{ $request->route('token') }}">
 
             <!-- Email Address -->
-            <div>
+            <div hidden>
                 <x-input-label for="email" :value="__('Email')" />
 
-                <x-text-input id="email" class="block mt-1 w-full" type="email" name="email" :value="old('email', $request->email)" required autofocus />
+                <x-text-input  id="email"  class="block mt-1 w-full" type="email" name="email" :value="old('email', $request->email)" required autofocus />
 
                 <x-input-error :messages="$errors->get('email')" class="mt-2" />
             </div>

@@ -20,9 +20,12 @@ class Order extends Controller
     public function index()
     {
      
-        if (in_array(Auth::user()->role, ['Kasir', 'Kitchen'])) {
+        if (Auth::user()->role == 'Kasir') {
             
             $orders = Pesanan::orderBy('id', 'desc')->get();
+            return view('pages.backsite.order.index', compact('orders'));
+        }else if(Auth::user()->role == 'Kitchen'){
+            $orders = Pesanan::where('id_status', 2)->orderBy('id', 'desc')->get();
             return view('pages.backsite.order.index', compact('orders'));
         }else{
             $orders = Pesanan::where('id_user', auth()->user()->id)->orderBy('id', 'desc')->get();

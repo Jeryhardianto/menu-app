@@ -44,7 +44,7 @@
                                     <th>Email</th>
                                     <th>Role</th>
                                     <th>Tanggal Buat</th>
-                                    <th>Tanggal Ubah</th>
+                                    <th>Foto</th>
                                     <th>Action</th>
                                 </tr>
                             </thead>
@@ -52,11 +52,15 @@
                                 @forelse ($users as $user)
                                     <tr>
                                         <td>{{ $loop->iteration }}</td>
-                                        <td>{{ $user->name }}</td>
+                                        <td>{{ $user->nama }}</td>
                                         <td>{{ $user->email }}</td>
-                                        <td>{{ $user->roles->first()->name }}</td>
+                                        <td>{{ $user->role}}</td>
                                         <td>{{ $user->created_at }}</td>
-                                        <td>{{ $user->updated_at }}</td>
+                                        <td>
+                                            @if ($user->foto)
+                                                <img src="{{env('AWS_URL')}}{{$user->foto}}" alt="Foto User"
+                                                    width="50px">
+                                            @endif
                                         <td>
                                             {{-- <a href="{{ route('users.show', $user->email) }}" class="btn btn-primary"><i
                                                     class="fas fa-eye"></i> Detail</a> --}}

@@ -19,14 +19,14 @@
             <!-- Navbar Search -->
             <!-- Notifications Dropdown Menu -->
            {{-- if page payment hide button cart  --}}
-            @unless (in_array(Route::currentRouteName(), ['payment', 'paymentsuccess', 'order']))
+            @unless (in_array(Route::currentRouteName(), ['payment', 'paymentsuccess', 'order', 'myaccount']))
             <button type="button" class="btn btn-warning" data-toggle="modal" data-target="#modalCart">
-                <i class="fas fa-shopping-cart"></i> 
+                <i class="fas fa-shopping-cart"></i>
                 <span class="badge badge-light">{{ $cart['sumQty'] }}</span>
             </button>
             @endif
             {{-- end if page payment hide button cart  --}}
-            
+
             <li class="nav-item dropdown">
                 @auth
                 @if (Auth::user()->role == 'Pelanggan')
@@ -38,19 +38,19 @@
                 </form>
                 @endif
                 @endauth
-                
+
                 @guest
                     <a href="{{ route('login') }}" class="btn btn-primary ml-2 nav-link text-white">
                         <i class="fas fa-sign-out-alt" style="color: #ffffff"></i> Login
                     </a>
-             
+
                 @endguest
-                  
+
             </li>
 
         </ul>
     </nav>
-    @unless (in_array(Route::currentRouteName(), ['payment', 'paymentsuccess', 'order']))
+    @unless (in_array(Route::currentRouteName(), ['payment', 'paymentsuccess', 'order', 'myaccount']))
     {{-- Modal Cart --}}
     <div class="modal fade" id="modalCart" tabindex="-1" role="dialog"  data-backdrop="static" aria-labelledby="modalCartTitle" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
@@ -75,7 +75,7 @@
                 @foreach ($cart['data'] as $key => $item )
                 <div class="card">
                     <div class="card-body">
-                       <div class="row">    
+                       <div class="row">
                             <div class="col-md-6">
                               {{ $item['nama']  }} x {{ $item['qty'] }} @ {{ Rupiah($item['harga'])  }}
                                 <input type="text" hidden name="id[]" value="{{ $item['id'] }}">
@@ -85,18 +85,18 @@
                             @php
                                 $harga = $item['harga'] * $item['qty'];
                                 $grandtotal += $harga;
-                                echo Rupiah($harga);    
+                                echo Rupiah($harga);
 
                             @endphp
 
                               <a class="badge badge-danger" href="{{ route('deletecart',$item['id']) }}">Hapus</a>
-                            
+
                             </div>
                        </div>
                     </div>
                   </div>
                 @endforeach
-          
+
 
                   <table class="table-responsive mt-3">
                         <tr>
@@ -107,7 +107,7 @@
                                 <input type="text" hidden id="total" name="total" value="{{ $grandtotal }}">
                             </td>
                         </tr>
-                      
+
                   </table>
             </div>
             <div class="modal-footer">
@@ -120,6 +120,6 @@
     </div>
     @endif
     <!-- End Modal Cart -->
+</div>
 
 
-        

@@ -11,7 +11,7 @@
 
             <!-- Name -->
             <div>
-                <x-input-label for="name" :value="__('Name')" />
+                <x-input-label for="name" :value="__('Nama')" />
 
                 <x-text-input id="name" class="block mt-1 w-full" type="text" name="name" :value="old('name')" required autofocus />
 
@@ -26,6 +26,23 @@
 
                 <x-input-error :messages="$errors->get('email')" class="mt-2" />
             </div>
+
+            <!--  Telpon -->
+            <div class="mt-4">
+                <x-input-label for="telpon" :value="__('Telpon')" />
+
+                <x-text-input id="telpon" class="block mt-1 w-full" type="number" name="telpon" :value="old('telpon')" required />
+                <x-input-error :messages="$errors->get('telpon')" class="mt-2" />
+            </div>
+
+              <!--  Alamat -->
+              <div class="mt-4">
+                <x-input-label for="alamat" :value="__('Alamat')" />
+
+                <x-text-input id="alamat" class="block mt-1 w-full" type="text" name="alamat" :value="old('alamat')" required />
+                <x-input-error :messages="$errors->get('alamat')" class="mt-2" />
+            </div>
+
 
             <!-- Password -->
             <div class="mt-4">
@@ -52,7 +69,7 @@
 
             <div class="flex items-center justify-end mt-4">
                 <a class="underline text-sm text-gray-600 hover:text-gray-900" href="{{ route('login') }}">
-                    {{ __('Already registered?') }}
+                    {{ __('Sudah punya akun?') }}
                 </a>
 
                 <x-primary-button class="ml-4">

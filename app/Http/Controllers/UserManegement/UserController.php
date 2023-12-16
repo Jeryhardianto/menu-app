@@ -60,23 +60,26 @@ class UserController extends Controller
        [],
         );
         if ($validator->fails()){
-            $request['role'] = Role::select('id', 'name')->find($request->role);
             return redirect()->back()->withInput($request->all())->withErrors($validator);
         }
         DB::beginTransaction();
         try {
-         
+
          $user = User::create([
-            'name' => $request->name,
+            'nama' => $request->name,
             'email' => $request->email,
             'password' => Hash::make($request->password),
+            'telepon' => $request->telepon,
+            'alamat' => $request->alamat,
+            'email_verified_at' => date('Y-m-d H:i:s'),
             'created_at' => date('Y-m-d H:i:s')
          ]);
-         $user->assignRole($request->role);
+
 
          Alert::success('Sukses','Data berhasil dibuat!');
          return redirect()->route('users.index');
         } catch (\Throwable $th) {
+
          DB::rollBack();
          Alert::error('Gagal','Data gagal dibuat!');
          return redirect()->back()->withInput($request->all());

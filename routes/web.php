@@ -1,12 +1,13 @@
 <?php
 
+
 use Illuminate\Routing\Router;
 
 // Backsite
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\backsite\Menu;
 
-// User Manegement 
+// User Manegement
 use App\Http\Controllers\backsite\Order;
 use App\Http\Controllers\backsite\Laporan;
 use App\Http\Controllers\backsite\Dashboard;
@@ -54,7 +55,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::resource('role', RoleController::class);
     // Users
     Route::resource('users', UserController::class);
-    
+
     // Post
     Route::resource('post', PostController::class);
 
@@ -62,8 +63,8 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/order', [Order::class, 'index'])->name('order');
     Route::post('/orderdetail', [Order::class, 'getDetailPesanan'])->name('orderdetail');
     Route::patch('/order/status', [Order::class, 'updatestatus'])->name('updatestatus');
-    
-    // Payment 
+
+    // Payment
     Route::get('/payment', [Order::class, 'payment'])->name('payment');
     Route::post('/createorder', [Order::class, 'createorder'])->name('createorder');
     Route::get('/paymentsuccess', [Order::class, 'paymentsuccess'])->name('paymentsuccess');
@@ -76,7 +77,14 @@ Route::middleware(['auth', 'verified'])->group(function () {
     // Subkategori
     Route::resource('subkategori', Subkategori::class);
 
+    // My Account
+    Route::get('/myaccount/{id}', [\App\Http\Controllers\UserManegement\Account::class, 'index'])->name('myaccount');
+    Route::put('/myaccount/{id}', [\App\Http\Controllers\UserManegement\Account::class, 'update'])->name('myaccount.update');
+    // reset password
+     Route::patch('/resetpassword/{id}', [\App\Http\Controllers\UserManegement\Account::class, 'resetpassword'])->name('resetpassword');
+
 });
+
 
 // Filepond
 Route::post('uploads/tmpupload', [FileUploadController::class, 'tmpUpload'])->name('uploads.process');
