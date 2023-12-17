@@ -12,20 +12,20 @@ use Illuminate\Validation\Rule;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
-use Illuminate\Support\Facades\Validator; 
+use Illuminate\Support\Facades\Validator;
 use Illuminate\Console\View\Components\Alert;
 
 class Order extends Controller
 {
     public function index()
     {
-     
+
         if (Auth::user()->role == 'Kasir') {
-            
+
             $orders = Pesanan::orderBy('id', 'desc')->get();
             return view('pages.backsite.order.index', compact('orders'));
         }else if(Auth::user()->role == 'Kitchen'){
-            $orders = Pesanan::where('id_status', 2)->orderBy('id', 'desc')->get();
+            $orders = Pesanan::whereIn('id_status', [2,5])->orderBy('id', 'desc')->get();
             return view('pages.backsite.order.index', compact('orders'));
         }else{
             $orders = Pesanan::where('id_user', auth()->user()->id)->orderBy('id', 'desc')->get();
@@ -36,7 +36,7 @@ class Order extends Controller
     public function checkout(Request $request)
     {
 
-   
+
         $validator = Validator::make($request->all(), [
             'nomormeja' => 'required',
 
@@ -47,7 +47,7 @@ class Order extends Controller
 
         // put nomor meja to session
         session()->put('nomormeja', $request->nomormeja);
-        
+
         // add session catatan multiple order
         session()->put('catatan', $request->catatan);
 
@@ -78,9 +78,9 @@ class Order extends Controller
 
     public function createorder(Request $request)
     {
-       
+
         $tmp_file = Temporary::where('folder', $request->buktibayar)->first();
-    
+
               // create validation select payment and upload payment
             $validator = Validator::make($request->all(), [
                 'metodebayar' => 'not_in:0',
@@ -89,11 +89,11 @@ class Order extends Controller
                 'metodebayar.not_in' =>  'Pilih Metode Pembayaran',
                 'buktibayar.required' =>  'Upload Bukti Pembayaran',
             ]);
-         
+
             if ($validator->fails()) {
                 return redirect()->route('payment')->withErrors($validator);
               }
-          
+
         if($tmp_file){
 
             // validation file
@@ -106,7 +106,7 @@ class Order extends Controller
             $file = Storage::get('images/temp/'.$tmp_file->folder.'/'.$tmp_file->file);
             // copy from storage to s3
             Storage::disk('s3')->put('payment/'.$tmp_file->file, $file);
-        
+
             // delete file and folder from storage
             Storage::delete('images/temp/'.$tmp_file->folder.'/'.$tmp_file->file);
             // remove directory
@@ -127,7 +127,7 @@ class Order extends Controller
             // create save to database detail pesanan
             if($pesanan){
                 $catatan = session()->get('catatan');
-               
+
                 $j = 0;
                 foreach(session()->get('cart') as $key => $cart){
                    DetailPesanan::create([
@@ -146,7 +146,7 @@ class Order extends Controller
                 session()->forget('cart');
                 session()->forget('nomormeja');
                 session()->forget('catatan');
-        
+
                 // direct to payment page with success message
                 return redirect()->route('paymentsuccess');
             }
@@ -156,7 +156,7 @@ class Order extends Controller
     {
         $id = request()->id;
         $detail = DetailPesanan::where('id_pesanan', $id)->get();
-        
+
         $details = [];
         foreach($detail as $key => $value){
             $details[$key]['id'] = $value->id;
@@ -182,7 +182,7 @@ class Order extends Controller
     // Updated status order
     public function updatestatus(Request $request)
     {
-        
+
         $pesanan = Pesanan::find($request->id);
         $pesanan->id_status = $request->status;
         $pesanan->catatan = $request->alasan;

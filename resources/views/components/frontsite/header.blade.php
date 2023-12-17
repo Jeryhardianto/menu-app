@@ -71,22 +71,24 @@
                   </div>
                   @php
                       $grandtotal = 0;
+                      $i = 0;
                   @endphp
                 @foreach ($cart['data'] as $key => $item )
+
                 <div class="card">
                     <div class="card-body">
                        <div class="row">
                             <div class="col-md-6">
                               {{ $item['nama']  }} x {{ $item['qty'] }} @ {{ Rupiah($item['harga'])  }}
                                 <input type="text" hidden name="id[]" value="{{ $item['id'] }}">
-                              <textarea class="form-control" name="catatan[]" id="catatan" placeholder="Catatan...." cols="20" rows="2">{{ $catatan }}</textarea>
+                              <textarea class="form-control" name="catatan[]" id="catatan" placeholder="Catatan...." cols="20" rows="2">{{ @$catatan[$i] }}</textarea>
                             </div>
                             <div class="col-md-6 ">
                             @php
                                 $harga = $item['harga'] * $item['qty'];
                                 $grandtotal += $harga;
                                 echo Rupiah($harga);
-
+                                $i++;
                             @endphp
 
                               <a class="badge badge-danger" href="{{ route('deletecart',$item['id']) }}">Hapus</a>
@@ -95,6 +97,7 @@
                        </div>
                     </div>
                   </div>
+
                 @endforeach
 
 

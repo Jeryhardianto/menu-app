@@ -18,7 +18,7 @@ class Menu extends Controller
     public function index()
     {
         $menus = ModelsMenu::all();
-        return view('pages.backsite.menu.index', compact('menus'));
+        return view('pages.backsite.menu.index', compact('menus' ));
     }
 
     /**
@@ -35,9 +35,9 @@ class Menu extends Controller
      */
     public function store(Request $request)
     {
-       
+
         $tmp_file = Temporary::where('folder', $request->gambarmenu)->first();
-    
+
               // create validation select payment and upload payment
             $validator = Validator::make($request->all(), [
                 'namamenu' => 'required',
@@ -48,17 +48,17 @@ class Menu extends Controller
                 'subkategori.not_in' =>  'Pilih Ketagori',
                 'harga.required' =>  'Harga Harus Diisi',
             ]);
-         
+
             if ($validator->fails()) {
                 return redirect()->route('menu.create')->withErrors($validator);
               }
-          
+
         if($tmp_file){
             // get file from storage
             $file = Storage::get('images/temp/'.$tmp_file->folder.'/'.$tmp_file->file);
             // copy from storage to s3
             Storage::disk('s3')->put('menu/'.$tmp_file->file, $file);
-        
+
             // delete file and folder from storage
             Storage::delete('images/temp/'.$tmp_file->folder.'/'.$tmp_file->file);
             // remove directory
@@ -72,7 +72,7 @@ class Menu extends Controller
                 'gambar' => 'menu/'.$tmp_file->file
             ]);
 
-         
+
                 if($menu){
                     Alert::success('Berhasil', 'Menu Berhasil Ditambahkan');
                     return redirect()->route('menu.index');
@@ -80,7 +80,7 @@ class Menu extends Controller
                     Alert::error('Gagal', 'Menu Gagal Ditambahkan');
                     return redirect()->route('menu.create');
                 }
-                
+
             }else{
                 $menu = ModelsMenu::create([
                     'nama_menu' => $request->namamenu,
@@ -112,7 +112,7 @@ class Menu extends Controller
      */
     public function edit(string $id)
     {
-        
+
         $menu = ModelsMenu::find($id);
         $subkategories = \App\Models\SubKategori::all();
         return view('pages.backsite.menu.edit', compact('menu', 'subkategories'));
@@ -127,7 +127,7 @@ class Menu extends Controller
         $menu = ModelsMenu::find($id);
 
         $tmp_file = Temporary::where('folder', $request->gambarmenu)->first();
-    
+
               // create validation select payment and upload payment
             $validator = Validator::make($request->all(), [
                 'namamenu' => 'required',
@@ -138,18 +138,18 @@ class Menu extends Controller
                 'subkategori.not_in' =>  'Pilih Ketagori',
                 'harga.required' =>  'Harga Harus Diisi',
             ]);
-         
+
             if ($validator->fails()) {
                 return redirect()->route('menu.edit', $menu->id)->withErrors($validator);
               }
-          
+
         if($tmp_file){
 
              // get file from storage
              $file = Storage::get('images/temp/'.$tmp_file->folder.'/'.$tmp_file->file);
              // copy from storage to s3
              Storage::disk('s3')->put('menu/'.$tmp_file->file, $file);
-         
+
              // delete file and folder from storage
              Storage::delete('images/temp/'.$tmp_file->folder.'/'.$tmp_file->file);
              // remove directory
@@ -162,8 +162,8 @@ class Menu extends Controller
                     'deskripsi' => $request->deskripsi,
                     'gambar' => 'menu/'.$tmp_file->file
                 ]);
- 
-          
+
+
                  if($menu){
                      Alert::success('Berhasil', 'Menu Berhasil Diubah');
                      return redirect()->route('menu.index');
@@ -181,7 +181,7 @@ class Menu extends Controller
                 'gambar' => $menu->gambar
             ]);
 
-      
+
              if($menu){
                  Alert::success('Berhasil', 'Menu Berhasil Diubah');
                  return redirect()->route('menu.index');

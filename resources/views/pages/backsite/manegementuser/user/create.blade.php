@@ -54,8 +54,8 @@
                                         </select>
                                         @error('role')
                                         <span class="invalid-feedback">
-                                    <strong>{{ $message }}</strong>
-                                </span>
+                                           <strong>{{ $message }}</strong>
+                                          </span>
                                         @enderror
                                     </div>
                                     <div class="form-group">

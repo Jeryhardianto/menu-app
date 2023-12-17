@@ -107,10 +107,7 @@ class UserController extends Controller
      */
     public function edit(User $user)
     {
-        return view('pages.backsite.manegementuser.user.edit',[
-            'user' => $user,
-            'roleSelected' => $user->roles->first()
-        ]);
+        return view('pages.backsite.manegementuser.user.edit', compact('user'));
     }
 
     /**
@@ -161,7 +158,6 @@ class UserController extends Controller
     {
         DB::beginTransaction();
         try {
-         $user->removeRole($user->roles->first());
          $user->delete();
          Alert::success('Sukses','Data berhasil dihapus!');
         } catch (\Throwable $th) {

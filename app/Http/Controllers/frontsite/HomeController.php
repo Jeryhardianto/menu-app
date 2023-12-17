@@ -13,8 +13,8 @@ class HomeController extends Controller
 {
     public function index(Request $request)
     {
-     
-        
+
+
         $subkategoris   = Subkategori::all();
         $menus = Menu::query();
 
@@ -22,11 +22,11 @@ class HomeController extends Controller
             $subkategoriId = $request->input('subkategori');
             $menus->where('id_subkategori', $subkategoriId);
         }
-        
+
         $menus = $menus->get();
 
         $cart = session()->get('cart');
-     
+
         if (!$cart) {
             $cart = [
                 'sumQty' => 0,
@@ -38,24 +38,23 @@ class HomeController extends Controller
             foreach ($cart as $item) {
                 $sumQty += $item['qty'];
             }
-           
+
             $cart = [
                 'sumQty' => $sumQty,
                 'data' => $cart
             ];
         }
-        
-        
+
+
         $nomormeja = session()->get('nomormeja');
         // catatan
         $catatan = session()->get('catatan');
-
         return view('pages.frontsite.index', compact('subkategoris', 'menus', 'cart', 'nomormeja', 'catatan'));
     }
 
     public function getDetailMenu($id)
     {
-        
+
         $menu = Menu::find($id);
         $menu->harga = Rupiah($menu->harga);
         return response()->json(
@@ -70,7 +69,7 @@ class HomeController extends Controller
     public function addToCart(Request $request)
     {
 
-       
+
         $cart = session()->get('cart');
 
         $id = $request->id_nemu;
@@ -81,7 +80,7 @@ class HomeController extends Controller
             Alert::error('Error', 'Qty tidak boleh kurang dari 1');
             return redirect()->back();
         }
-        
+
         $menu = Menu::find($id);
 
         $cart[$id] = [
@@ -104,5 +103,5 @@ class HomeController extends Controller
         Alert::success('Sukses', 'Berhasil menghapus menu dari keranjang');
         return redirect()->back();
     }
-   
+
 }

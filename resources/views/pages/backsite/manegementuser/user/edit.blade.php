@@ -13,7 +13,7 @@
                     </div><!-- /.col -->
                     <div class="col-sm-6">
                         <ol class="breadcrumb float-sm-right">
-                            <li class="breadcrumb-item">User</a></li>
+                            <li class="breadcrumb-item">User</li>
                             <li class="breadcrumb-item active">Edit User</li>
                         </ol>
                     </div><!-- /.col -->
@@ -53,22 +53,25 @@
                                     </span>
                                 @enderror
                             </div>
+                            @php
+                                $roles = ['Owner', 'Kasir', 'Kitchen', 'Pelanggan'];
+                            @endphp
                             <div class="form-group">
                                 <label for="role">Role</label>
                                 <select class="form-control @error('role') is-invalid @enderror" id="role" name="role" style="width: 100%;">
-                                <option value="{{ old('role',$roleSelected->id) }}" selected>
-                                    {{ old('role', $roleSelected->name) }}
-                                </option>
+                                    @foreach ($roles as $role)
+                                        <option value="{{ $role }}" @if ($user->role === $role) selected @endif>{{ $role }}</option>
+                                    @endforeach
                                 </select>
                                 @error('role')
                                 <span class="invalid-feedback">
-                                    <strong>{{ $message }}</strong>
-                                </span>
+                                           <strong>{{ $message }}</strong>
+                                          </span>
                                 @enderror
                             </div>
-                      
 
-                          
+
+
 
                         </div>
                         <div class="card-footer">
@@ -86,28 +89,5 @@
 @endsection
 
 @push('javascript-internal')
-    <script>
-        $(function() {
-            $('#role').select2({
-                theme: 'bootstrap4',
-                allowClear: true,
-                ajax: {
-                    url: "{{ route('roles.select') }}",
-                    dataType: 'json',
-                    delay: 250,
-                    processResults: function(data) {
-                        return {
-                            results: $.map(data, function(item) {
-                                return {
-                                    text: item.name,
-                                    id: item.id
-                                }
-                            })
-                        }
-                    }
-                }
 
-            });
-        });
-    </script>
 @endpush
