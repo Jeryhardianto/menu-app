@@ -32,10 +32,9 @@
                     <!-- /.card-header -->
 
                     <div class="card-body">
-                        @can('post_create')
                         <a href="{{ route('menu.create') }}" class="btn btn-primary"><i class="fas fa-plus"></i> Tambah
-                            Post</a>
-                        @endcan
+                            Data Menu</a>
+                 
                         <table id="example1" class="table table-bordered table-striped">
                             <thead>
                                 <tr>

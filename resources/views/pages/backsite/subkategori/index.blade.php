@@ -32,10 +32,9 @@
                     <!-- /.card-header -->
 
                     <div class="card-body">
-                        @can('post_create')
                         <a href="{{ route('subkategori.create') }}" class="btn btn-primary"><i class="fas fa-plus"></i> Tambah
                             Subkategori</a>
-                        @endcan
+                   
                         <table id="example1" class="table table-bordered table-striped">
                             <thead>
                                 <tr>
