@@ -31,7 +31,18 @@
   <link rel="stylesheet" href="{{ asset('assets/backsite/dist/css/adminlte.min.css') }}">
   {{-- EndDist --}}
 
-  
+  <style>
+    .nav-pills .nav-link{
+      color: #fff !important;
+    }
+    .active {
+      background-color: #ddd607 !important;
+    }
+    .nav-header {
+     color: rgb(253, 253, 253) !important;
+    }
+
+  </style>
 
 
 
