@@ -74,6 +74,19 @@
                                         <textarea class="form-control" name="deskripsi" placeholder="Masukan deskripsi" id="deskripsi" cols="30" rows="5"></textarea>
                                  
                                     </div>
+
+                                    <div class="form-group">
+                                        <label for="status">Status Menu</label>
+                                        <select class="form-control @error('status') is-invalid @enderror" id="status" name="status" style="width: 100%;">
+                                            <option value="1">Tersedia</option>
+                                            <option value="0">Tidak Tersedia</option>
+                                        </select>
+                                        @error('status')
+                                        <span class="invalid-feedback">
+                                            <strong>{{ $message }}</strong>
+                                        </span>
+                                        @enderror
+                                    </div>
                                   
         
                                 </div>

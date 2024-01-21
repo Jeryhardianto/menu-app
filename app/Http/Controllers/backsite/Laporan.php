@@ -27,6 +27,8 @@ class Laporan extends Controller
                 $orders = Pesanan::where('id_status', $status)->get();
             }
         }
+     
+    
         return view('pages.backsite.laporan.index', compact('orders'));
     }
 }

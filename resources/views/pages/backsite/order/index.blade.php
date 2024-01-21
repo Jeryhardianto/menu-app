@@ -32,7 +32,9 @@
                                                 <th>No</th>
                                                 <th>Tanggal</th>
                                                 <th>Nomor Transaksi</th>
+                                                <th>Nama Pelanggan</th>
                                                 <th>Nomor Meja</th>
+                                                <th>Nama Kasir</th>
                                                 <th>Total</th>
                                                 <th>Status</th>
                                                 <th>Aksi</th>
@@ -49,7 +51,27 @@
                                                             {{ $item->no_transaksi }}
                                                         </a>
                                                     </td>
-                                                    <td>{{ $item->nomor_meja }}</td>
+                                                    <td>
+                                                        <span class="badge badge-danger">
+                                                        {{ $item->pengguna->nama }}
+                                                        </span>
+                                                    </td>
+                                                    <td>
+                                                        @if($item->nomor_meja != 0)
+                                                        <span class="badge badge-primary">
+                                                            {{ $item->nomor_meja }}
+                                                        </span>
+                                                        @else
+                                                        <span class="badge badge-success">
+                                                            {{ $item->type }}
+                                                        </span>
+                                                        @endif
+                                                    </td>
+                                                    <td>
+                                                        <span class="badge badge-primary">
+                                                            {{ $item->penggunakasir->nama ?? '-' }}
+                                                        </span>
+                                                    </td>
                                                     <td>{{ Rupiah($item->total) }}</td>
                                                     <td>
 
@@ -69,12 +91,16 @@
                                                             <span class="badge badge-success">Pesanan Diterima</span>
                                                         @elseif($item->statusLabel->status == 'COMPLETED')
                                                             <span class="badge badge-success">Pesanan Selesai</span>
+                                                        @elseif($item->statusLabel->status == 'ORDER IS NOT CORRECT')
+                                                        <span class="badge badge-danger">Pesanan Tidak Sesuai</span>
+                                                        <br>
+                                                        <span class="badge badge-danger">Alasan: {{ $item->catatan }}</span>
                                                         @endif
                                                     </td>
                                                     <td>
                                                         <a href="#" id="detail" onclick="detail('{{ $item->id }}','{{ $item->no_transaksi }}')"
                                                             class="btn btn-info btn-sm">Detail</a>
-                                                        <a href="#" id="buktibayar" onclick="buktibayar('{{ $item->id }}','{{ $item->no_transaksi }}','{{ $item->bukti_bayar }}')" 
+                                                        <a href="#" id="buktibayar" onclick="buktibayar('{{ $item->id }}','{{ $item->no_transaksi }}','{{ $item->bukti_bayar }}')"
                                                             class="btn btn-info btn-sm">Bukti Bayar</a>
                                                     </td>
                                                 </tr>

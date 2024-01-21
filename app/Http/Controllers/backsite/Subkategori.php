@@ -4,9 +4,11 @@ namespace App\Http\Controllers\backsite;
 
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use App\Models\LogSubkategori;
 use RealRashid\SweetAlert\Facades\Alert;
 use Illuminate\Support\Facades\Validator;
 use App\Models\Subkategori as ModelsSubkategori;
+use AWS\CRT\Log;
 
 class Subkategori extends Controller
 {
@@ -16,7 +18,8 @@ class Subkategori extends Controller
     public function index()
     {
         $subkategories = \App\Models\Subkategori::all();
-        return view('pages.backsite.subkategori.index', compact('subkategories'));
+        $logs = LogSubkategori::all();
+        return view('pages.backsite.subkategori.index', compact('subkategories', 'logs'));
     }
     
     /**
@@ -51,7 +54,14 @@ class Subkategori extends Controller
             'id_kategori' => $request->kategori
         ]);
 
-     
+        LogSubkategori::create([
+            'id_user' => auth()->user()->id,
+            'before' => null,
+            'after' => json_encode($sub),
+            'deskripsi' => 'Menambahkan Subkategori Baru',
+            'created_at' => now()
+        ]);
+
             if($sub){
                 Alert::success('Berhasil', 'Subkategori Berhasil Ditambahkan');
                 return redirect()->route('subkategori.index');
@@ -101,12 +111,25 @@ class Subkategori extends Controller
         if ($validator->fails()) {
             return redirect()->route('subkategori.edit', $subkategori->id)->withErrors($validator);
           }
+          $data = [
+            'subketagori' => $request->subkategori,
+            'id_kategori' => $request->kategori
+          ];
+
+          LogSubkategori::create([
+            'id_user' => auth()->user()->id,
+            'before' => json_encode($subkategori),
+            'after' => json_encode($data),
+            'deskripsi' => 'Mengubah data',
+            'created_at' => now()
+        ]);
 
           $subkategori->update([
             'subketagori' => $request->subkategori,
             'id_kategori' => $request->kategori
         ]);
 
+       
      
             if($subkategori){
                 Alert::success('Berhasil', 'Subkategori Berhasil Diupdate');

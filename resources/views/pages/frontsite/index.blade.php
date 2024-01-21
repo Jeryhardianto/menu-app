@@ -26,6 +26,7 @@
                 @endforeach
                 <div class="row">
                     @foreach ($menus as $ms )
+                    
                     <div class="col-sm-6 col-md-4">
 
                         <div class="card">
@@ -39,7 +40,12 @@
                                     <i class="fas fa-shopping-cart"></i> Order
                                 </button>
                                 <br>
-                                <span class="badge badge-danger">{{ $ms->GetSubkategori->GetKategori->kategori }}</span>
+                              @if ($ms->is_available == 1)
+                                <span class="badge badge-success">Tersedia</span>
+                              @else
+                                <span class="badge badge-danger">Tidak Tersedia</span>
+                              @endif
+                                <span class="badge badge-warning">{{ $ms->GetSubkategori->GetKategori->kategori }}</span>
                                 <span class="badge badge-primary">{{ $ms->GetSubkategori->subketagori }}</span>
 
                             </div>

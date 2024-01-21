@@ -66,7 +66,8 @@
                                         <tr>
                                             <th>No</th>
                                             <th>No Transaksi</th>
-                                            <th>Nomor Meja</th>
+                                            <th>Pengguna</th>
+                                            <th>Alamat</th>
                                             <th>Total</th>
                                             <th>Status</th>
 
@@ -79,7 +80,8 @@
                                         <tr>
                                             <td>{{ $loop->iteration }}</td>
                                             <td>{{ $order->no_transaksi }}</td>
-                                            <td>{{ $order->nomor_meja }}</td>
+                                            <td>{{ $order->pengguna->nama }}</td>
+                                            <td>{{ $order->pengguna->alamat }}</td>
                                             <td>
                                                 
                                                 @if ($order->statusLabel->status == 'PENDING')

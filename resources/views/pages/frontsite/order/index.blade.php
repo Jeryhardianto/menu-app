@@ -34,6 +34,7 @@
                                                 <th>Nomor Meja</th>
                                                 <th>Total</th>
                                                 <th>Status</th>
+                                                <th>Tanggal</th>
                                                 <th>Aksi</th>
                                             </tr>
                                         </thead>
@@ -48,6 +49,7 @@
                                                     </td>
                                                     <td>{{ $item->nomor_meja }}</td>
                                                     <td>{{ Rupiah($item->total) }}</td>
+                                                    <td>{{ $item->created_at }}</td>
                                                     <td>
 
                                                         @if ($item->statusLabel->status == 'PENDING')
@@ -64,11 +66,17 @@
                                                             <span class="badge badge-success">Pesanan Diterima</span>
                                                         @elseif($item->statusLabel->status == 'COMPLETED')
                                                             <span class="badge badge-success">Pesanan Selesai</span>
+                                                        @elseif($item->statusLabel->status == 'ORDER IS NOT CORRECT')
+                                                            <span class="badge badge-danger">Pesanan Tidak Sesuai</span>
+                                                            <br>
+                                                            <span class="badge badge-danger">Alasan: {{ $item->catatan }}</span>
                                                         @endif
                                                     </td>
                                                     <td>
                                                         <a href="#" id="detail" onclick="detail('{{ $item->id }}','{{ $item->no_transaksi }}')"
                                                             class="btn btn-info btn-sm">Detail</a>
+                                                            <a href="#" id="ubahstatus" onclick="ubahstatus('{{ $item->id }}','{{ $item->no_transaksi }}')"
+                                                                class="btn btn-info btn-sm">Ubah Status</a>
                                                     </td>
                                                 </tr>
                                             @endforeach
@@ -102,7 +110,9 @@
                 </div>
                 <div class="modal-body">
 
+                 
                 </div>
+
                 <div class="modal-footer">
                     {{-- total in span --}}
 
@@ -114,6 +124,54 @@
         </div>
     </div>
     {{-- End Modal --}}
+
+        {{-- Modal Ubah Status --}}
+        <div class="modal fade" id="ubahstatusModal" tabindex="-1" aria-labelledby="ubahstatusLabel" aria-hidden="true">
+            <form id="ubahstatusform">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="ubahstatusLabel">Ubah Status - <span id="notrxb"></span></h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <label for="status">Status</label>
+                        <select name="status" class="form-control form-control-lg" id="status">
+                            <option value="">Pilih Status</option>
+                           @if (Auth::user()->role == 'Kasir')
+                            <option value="2">IN PROGRESS</option>
+                            <option value="3">REJECT</option>
+                            <option value="4">CANCEL</option>
+                            @elseif (Auth::user()->role == 'Kitchen')
+                            <option value="5">DEVLIVERED</option>
+                            <option value="6">COMPLETED</option>
+                           @elseif (Auth::user()->role == 'Pelanggan')
+                            <option value="6">COMPLETED</option>
+                            <option value="7">ORDER IS NOT CORRECT</option>
+                           @endif
+                           
+                        </select>
+                        <input type="text" name="id" id="id" hidden>
+                    
+                        <label class="mt-3" for="alasan">Ulasan</label>
+                        <textarea class="form-control" name="alasan" required id="alasan" cols="30" rows="2" placeholder="Tulis Ulasan Anda ....."></textarea>
+                    </div>
+                    
+                        <div class="modal-footer">
+                            
+    
+                            <button type="button" onclick="updateStatus()" class="btn btn-primary"  data-dismiss="modal">Simpan</button>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+        {{-- End Modal Ubah Status --}}
+    
+
+
 
 
 @endsection
@@ -194,5 +252,77 @@
                 var notrx = notrx;
                 showOrderDetail(id, notrx);
         }
+
+        function ubahstatus(id, notrx) {
+                $('#ubahstatusModal').modal('show');
+                $('#notrxb').html(notrx);
+                $('#id').val(id);
+            }
+        
+        function updateStatus() {
+            var id = $('#id').val();
+            var status = $('#status').val();
+            var alasan = $('#alasan').val();
+
+
+            // validation status
+            if (status == '') {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Gagal',
+                    text: 'Status harus dipilih',
+                    showConfirmButton: false,
+                    timer: 1500
+                });
+                return false;
+            }
+
+            if(status == 3 || status == 4) {
+                if(alasan == '') {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Gagal',
+                        text: 'Alasan harus diisi',
+                        showConfirmButton: false,
+                        timer: 1500
+                    });
+                    $('#alasan').addClass('is-invalid');
+                    return false;
+                }
+            }
+
+            $.ajax({
+                url: "{{ route('updatestatus') }}",
+                type: "PATCH",
+                data: {
+                    id: id,
+                    status: status,
+                    alasan: alasan,
+                    _token: "{{ csrf_token() }}"
+                },
+                success: function(response) {
+                    if (response.success) {
+                        Swal.fire({
+                            icon: 'success',
+                            title: 'Berhasil',
+                            text: response.message,
+                            showConfirmButton: false,
+                            timer: 1500
+                        })
+                        .then(function() {
+                            location.reload();
+                        });
+                    } else {
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Gagal',
+                            text: response.message,
+                            showConfirmButton: false,
+                        });
+                    }
+                }
+            });
+        }
+
     </script>
 @endpush

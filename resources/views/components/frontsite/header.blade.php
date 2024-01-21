@@ -63,7 +63,42 @@
             </button>
             </div>
             <div class="modal-body">
+                @auth
                 <div class="form-group row">
+                    <label for="nomormeja" class="col-sm-2 col-form-label">Nama</label>
+
+                    <div class="col-sm-10">
+                        <input type="text"  class="form-control" name="nama" id="nama" value="{{ Auth::user()->nama }}" readonly>
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <label for="tanggal" class="col-sm-2 col-form-label">Tanggal</label>
+                    <div class="col-sm-10">
+                        @php
+                            $date = date('Y-m-d H:i');
+                        @endphp
+                        <input type="text"  class="form-control" name="tanggal" id="tanggal" value="{{ $date }}" readonly>
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <label for="type" class="col-sm-2 col-form-label">Tipe</label>
+                    <div class="col-sm-10">
+                        <select name="type" id="type" class="form-control">
+                            <option value="Dine In">DINE IN</option>
+                            <option value="Take Away">TAKEAWAY</option>
+                        </select>
+                    </div>
+                  
+                </div>
+                <div class="form-group row" id="alamat-label">
+                    <label for="type" class="col-sm-2 col-form-label">Alamat</label>
+                    <div class="col-sm-10">
+                        <textarea name="alamat" id="alamat" class="form-control" cols="30" rows="2">{{ Auth::user()->alamat }}</textarea>
+                    </div>
+                  
+                </div>
+                @endauth
+                <div class="form-group row" id="nomormeja-label">
                     <label for="nomormeja" class="col-sm-2 col-form-label">Nomor Meja</label>
                     <div class="col-sm-10">
                       <input type="text" data-mask="00" class="form-control" name="nomormeja" id="nomormeja" value="{{ $nomormeja }}" placeholder="Nomor Meja">
@@ -102,12 +137,28 @@
 
 
                   <table class="table-responsive mt-3">
+                    <tr>
+                        <td width="10%"><b>Sub Total</b></td>
+                        <td>:</td>
+                        <td width="50%">
+                            <b id="Subtotal-label">{{ Rupiah($grandtotal) }}</b>
+                            <input type="text" hidden  id="Subtotal" name="Subtotal" value="{{ $grandtotal }}">
+                        </td>
+                    </tr>
+                        <tr id="pengiriman-form">
+                            <td width="10%"><b>Biaya Pengiriman</b></td>
+                            <td>:</td>
+                            <td width="50%">
+                                <b id="pengiriman-label">Rp 0</b>
+                                <input type="text" hidden  id="pengiriman" name="pengiriman">
+                            </td>
+                        </tr>
                         <tr>
                             <td width="10%"><b>Total</b></td>
                             <td>:</td>
                             <td width="50%">
-                                <b>{{ Rupiah($grandtotal) }}</b>
-                                <input type="text" hidden id="total" name="total" value="{{ $grandtotal }}">
+                                <b id="total-label">{{ Rupiah($grandtotal) }}</b>
+                                <input type="text" hidden  id="total" name="total" value="{{ $grandtotal }}">
                             </td>
                         </tr>
 
@@ -124,5 +175,39 @@
     @endif
     <!-- End Modal Cart -->
 </div>
+@unless (in_array(Route::currentRouteName(), ['payment', 'paymentsuccess', 'order', 'myaccount']))
+@push('javascript-internal')
+<script>
+    $(document).ready(function() {
+        $('#alamat-label').prop('hidden', true);
+        $('#pengiriman-form').prop('hidden', true);
+    });
+    $('#type').change(function(){
+        var type = $(this).val();
+        if(type == 'Take Away'){
+            $('#nomormeja-label').prop('hidden', true);
+            $('#alamat-label').prop('hidden', false);
+            $('#pengiriman-form').prop('hidden', false);
+            // add cost take away 10000
+            $('#pengiriman-label').html('{{ Rupiah(10000) }}');
+            $('#pengiriman').val(10000);
+            $('#total').val({{ $grandtotal + 10000 }});
+            $('#total-label').html('{{ Rupiah($grandtotal + 10000) }}');
 
+        }else{
+            $('#nomormeja-label').prop('hidden', false);
+            $('#alamat-label').prop('hidden', true);
+            $('#pengiriman-label').html('{{ Rupiah(0) }}');
+            $('#pengiriman').val(0);
+            $('#total').val({{ $grandtotal }});
+            $('#total-label').html('{{ Rupiah($grandtotal) }}');
+            $('#pengiriman-form').prop('hidden', true);
+            
+
+        }
+    });
+</script>
+
+@endpush
+@endif
 

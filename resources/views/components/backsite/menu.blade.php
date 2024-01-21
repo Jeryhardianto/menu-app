@@ -83,7 +83,7 @@
                 </li>
                 @endif
 
-                @if (in_array(Auth::user()->role, ['Owner','Kasir']))
+                @if (in_array(Auth::user()->role, ['Owner']))
                 <li class="nav-header">Master Data</li>
                 <li class="nav-item">
                     <a href="{{ route('menu.index') }}" class="nav-link {{ set_active(['menu.index', 'menu.show','menu.create','menu.edit']) }}">
@@ -93,7 +93,6 @@
                         </p>
                     </a>
                 </li>
-
 
                 <li class="nav-item">
                     <a href="{{ route('subkategori.index') }}" class="nav-link {{ set_active(['subkategori.index', 'subkategori.show','subkategori.create','subkategori.edit']) }}">

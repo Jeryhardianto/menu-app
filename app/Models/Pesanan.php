@@ -30,14 +30,19 @@ class Pesanan extends Model
         'id_pengguna' => 'string',
         'id_status' => 'integer',
         'nomor_meja' => 'integer',
+        'type' => 'string',
         'total' => 'integer',
     ];
 
     public function pengguna()
     {
-        return $this->belongsTo(User::class, 'id_pengguna');
+        return $this->belongsTo(User::class, 'id_user');
     }
-
+    
+    public function penggunakasir()
+    {
+        return $this->belongsTo(User::class, 'kasir');
+    }
     public function statusLabel()
     {
         return $this->belongsTo(Status::class, 'id_status');

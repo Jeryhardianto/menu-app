@@ -49,6 +49,8 @@ class HomeController extends Controller
         $nomormeja = session()->get('nomormeja');
         // catatan
         $catatan = session()->get('catatan');
+
+      
         return view('pages.frontsite.index', compact('subkategoris', 'menus', 'cart', 'nomormeja', 'catatan'));
     }
 
