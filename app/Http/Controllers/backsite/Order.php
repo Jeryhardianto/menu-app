@@ -26,7 +26,7 @@ class Order extends Controller
                                 ->orderBy('id', 'desc')->get();
             return view('pages.backsite.order.index', compact('orders'));
         }else if(Auth::user()->role == 'Kitchen'){
-            $orders = Pesanan::whereIn('id_status', [2,5,7])->orderBy('id', 'desc')->get();
+            $orders = Pesanan::whereIn('id_status', [2,7])->orderBy('id', 'desc')->get();
             return view('pages.backsite.order.index', compact('orders'));
         }else{
             $orders = Pesanan::where('id_user', auth()->user()->id)->orderBy('id', 'desc')->get();
@@ -47,12 +47,12 @@ class Order extends Controller
                 return response()->json(['errors'=> $validator->errors()]);
             }
         }else{
-            session()->put('alamat', $request->alamat); 
+            session()->put('alamat', $request->alamat);
         }
 
 
         // put type to session
-        session()->put('type', $request->type); 
+        session()->put('type', $request->type);
 
         // put nomor meja to session
         session()->put('nomormeja', $request->nomormeja);
@@ -60,7 +60,7 @@ class Order extends Controller
         // add session catatan multiple order
         session()->put('catatan', $request->catatan);
 
-        
+
 
         // check user is login
         if(!auth()->check()){
@@ -153,7 +153,7 @@ class Order extends Controller
                      $j++;
                 }
             }
-            
+
 
                 // delete session cart
                 session()->forget('cart');
@@ -169,7 +169,7 @@ class Order extends Controller
     {
         $id = request()->id;
         $detail = DetailPesanan::where('id_pesanan', $id)->get();
-        // get pesanan 
+        // get pesanan
         $pesanan = Pesanan::where('id', $id)->get();
 
         // how concat array pesanan and detail pesanan
@@ -182,10 +182,10 @@ class Order extends Controller
             $details[$key]['harga'] = $value->harga;
             $details[$key]['subtotal'] = $value->subtotal;
             $details[$key]['deskripsi'] = $value->deskripsi;
-            
+
         }
 
-        
+
 
 
         return response()->json([
@@ -210,7 +210,7 @@ class Order extends Controller
         if(Auth::user()->role == 'Kasir'){
             $pesanan->kasir = auth()->user()->id;
         }
-        
+
         $pesanan->save();
 
         if($pesanan){

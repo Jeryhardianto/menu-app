@@ -159,9 +159,9 @@
                     </button>
                 </div>
                 <div class="modal-body">
-                  
+
                 </div>
-                
+
                     <div class="modal-footer">
                         <select name="status" class="form-control form-control-lg" id="status">
                             <option value="">Pilih Status</option>
@@ -170,13 +170,12 @@
                             <option value="3">REJECT</option>
                             <option value="4">CANCEL</option>
                             @elseif (Auth::user()->role == 'Kitchen')
-                            <option value="5">DEVLIVERED</option>
                             <option value="6">COMPLETED</option>
                            @endif
-                           
+
                         </select>
                         <input type="text" name="id" id="id" hidden>
-                    
+
                         <textarea class="form-control" name="alasan" required id="alasan" cols="30" rows="2"></textarea>
 
                         <button type="button" onclick="updateStatus()" class="btn btn-primary"  data-dismiss="modal">Simpan</button>
@@ -193,7 +192,7 @@
     <script>
         $(document).ready(function() {
             $('#alasan').hide();
-            $('#listorder').DataTable(); 
+            $('#listorder').DataTable();
         });
 
         function showOrderDetail(id, notrx) {
@@ -344,7 +343,7 @@
                 $('#id').val(id);
                 var html = '';
                 html += '<img src="{{ env('AWS_URL') }}' + buktibayar + '" class="img-fluid" alt="Bukti Bayar">';
-                
+
                 $('.modal-body').html(html);
 
             }

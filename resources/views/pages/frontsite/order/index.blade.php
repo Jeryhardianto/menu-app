@@ -33,8 +33,8 @@
                                                 <th>Nomor Transaksi</th>
                                                 <th>Nomor Meja</th>
                                                 <th>Total</th>
-                                                <th>Status</th>
                                                 <th>Tanggal</th>
+                                                <th>Status</th>
                                                 <th>Aksi</th>
                                             </tr>
                                         </thead>
@@ -80,7 +80,7 @@
                                                     </td>
                                                 </tr>
                                             @endforeach
-                                          
+
                                         </tbody>
                                     </table>
                                 </div>
@@ -110,7 +110,7 @@
                 </div>
                 <div class="modal-body">
 
-                 
+
                 </div>
 
                 <div class="modal-footer">
@@ -151,17 +151,17 @@
                             <option value="6">COMPLETED</option>
                             <option value="7">ORDER IS NOT CORRECT</option>
                            @endif
-                           
+
                         </select>
                         <input type="text" name="id" id="id" hidden>
-                    
+
                         <label class="mt-3" for="alasan">Ulasan</label>
                         <textarea class="form-control" name="alasan" required id="alasan" cols="30" rows="2" placeholder="Tulis Ulasan Anda ....."></textarea>
                     </div>
-                    
+
                         <div class="modal-footer">
-                            
-    
+
+
                             <button type="button" onclick="updateStatus()" class="btn btn-primary"  data-dismiss="modal">Simpan</button>
                         </div>
                     </div>
@@ -169,7 +169,7 @@
             </form>
         </div>
         {{-- End Modal Ubah Status --}}
-    
+
 
 
 
@@ -227,7 +227,7 @@
                             html += '</div>';
                             // sum subtotal
                             total += value.subtotal;
-                          
+
                         });
                         $('.modal-body').html(html);
                         total = total.toLocaleString('id-ID', {
@@ -258,7 +258,7 @@
                 $('#notrxb').html(notrx);
                 $('#id').val(id);
             }
-        
+
         function updateStatus() {
             var id = $('#id').val();
             var status = $('#status').val();
