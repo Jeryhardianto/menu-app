@@ -131,7 +131,11 @@
             "order": [[ 0, "desc" ]],
             dom: 'Bfrtip',
             buttons: [
-                'pdf'
+                {
+                    extend: 'pdf',
+                    text: 'Cetak Laporan',
+                    className:"btn btn-warning",
+                }
             ]
         });
 
