@@ -75,8 +75,10 @@
                                                     <td>
                                                         <a href="#" id="detail" onclick="detail('{{ $item->id }}','{{ $item->no_transaksi }}')"
                                                             class="btn btn-info btn-sm">Detail</a>
-                                                            <a href="#" id="ubahstatus" onclick="ubahstatus('{{ $item->id }}','{{ $item->no_transaksi }}')"
+                                                            @if (in_array(Auth::user()->role, ['Kitchen','Kasir']))
+                                                        <a href="#" id="ubahstatus" onclick="ubahstatus('{{ $item->id }}','{{ $item->no_transaksi }}')"
                                                                 class="btn btn-info btn-sm">Ubah Status</a>
+                                                            @endif
                                                     </td>
                                                 </tr>
                                             @endforeach
