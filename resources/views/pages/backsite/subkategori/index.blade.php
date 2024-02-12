@@ -9,12 +9,12 @@
             <div class="container-fluid">
                 <div class="row mb-2">
                     <div class="col-sm-6">
-                        <h1 class="m-0">List Menu</h1>
+                        <h1 class="m-0">List Subkategori</h1>
                     </div><!-- /.col -->
                     <div class="col-sm-6">
                         <ol class="breadcrumb float-sm-right">
                             {{-- <li class="breadcrumb-item"><a href="#">Home</a></li> --}}
-                            <li class="breadcrumb-item active">Menu</li>
+                            <li class="breadcrumb-item active">Subkategori</li>
                         </ol>
                     </div><!-- /.col -->
                 </div><!-- /.row -->
@@ -81,6 +81,73 @@
                     </div>
                     <!-- /.card-body -->
                 </div>
+
+                <div class="card card-primary ">
+                    <div class="card-header" data-card-widget="collapse">
+                      <h3 class="card-title">Log Subkategori</h3>
+                      <div class="card-tools">
+                        <button type="button" class="btn btn-tool" data-card-widget="collapse">
+                          <i class="fas fa-minus"></i>
+                        </button>
+                      </div>
+                    </div>
+                    <div class="card-body" style="display: block;">
+                       <table class="table table-bordered table-striped">
+                           <thead>
+                               <tr></tr>
+                                   <th>No</th>
+                                   <th>Data Sebelum</th>
+                                   <th>Data Sesudah</th>
+                                   <th>Deskripsi</th>
+                                   <th>Dibuat</th>
+                                   <th>Tanggal</th>
+                               </tr>
+                           </thead>
+                           <tbody>
+                               @foreach ($logs as $log)
+                                   <tr>
+                                       <td>{{ $loop->iteration }}</td>
+                                       <td>
+                                           @php
+                                               if (is_null($log->before)) {
+                                                   $before = [];
+                                               }
+                                               $before = json_decode($log->before);
+                                           @endphp
+                                           @if (is_null($before))
+                                               <strong>-</strong>
+                                           @else
+                                           @foreach ($before as $key => $value)
+                                           <strong>{{ $key }}</strong> : {{ $value }} <br>
+                                           @endforeach
+                                           @endif
+                                       </td>
+   
+                                       <td>
+                                           @php
+                                               if (is_null($log->after)) {
+                                                   $after = [];
+                                               }
+                                               $after = json_decode($log->after);
+                                           @endphp
+                                           @if (is_null($after))
+                                               <strong>-</strong>
+                                           @else
+                                           @foreach ($after as $key => $value)
+                                           <strong>{{ $key }}</strong> : {{ $value }} <br>
+                                           @endforeach
+                                           @endif
+                                       </td>
+                                  
+                                       <td>{{ $log->deskripsi }}</td>
+                                       <td>{{ $log->pengguna->nama }}</td>
+                                       <td>{{ $log->created_at->diffForHumans() }}</td>
+                                   </tr>
+                               @endforeach
+                           </tbody>
+                       </table>
+                    </div>
+                  </div>
             </div><!-- /.container-fluid -->
         </section>
         <!-- /.content -->

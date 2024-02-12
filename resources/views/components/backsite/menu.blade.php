@@ -72,6 +72,34 @@
 
 
 
+           
+
+                @if (in_array(Auth::user()->role, ['Owner']))
+               
+                <li class="nav-header">Master Data</li>
+                @endif
+                @if (in_array(Auth::user()->role, ['Owner','Kasir']))
+                <li class="nav-item">
+                    <a href="{{ route('menu.index') }}" class="nav-link {{ set_active(['menu.index', 'menu.show','menu.create','menu.edit']) }}">
+                        <i class="nav-icon fas fa-utensils"></i>
+                        <p>
+                            Data Menu
+                        </p>
+                    </a>
+                </li>
+                @endif
+                @if (in_array(Auth::user()->role, ['Owner']))
+                <li class="nav-item">
+                    <a href="{{ route('subkategori.index') }}" class="nav-link {{ set_active(['subkategori.index', 'subkategori.show','subkategori.create','subkategori.edit']) }}">
+                    
+                        <i class="nav-icon far fa-folder"></i>
+                        <p>
+                            Data Subkategori
+                        </p>
+                    </a>
+                </li>
+                @endif
+
                 @if (in_array(Auth::user()->role, ['Owner','Kasir']))
                 <li class="nav-item">
                     <a href="{{ route('laporan') }}" class="nav-link {{ set_active(['laporan']) }}">
@@ -83,27 +111,6 @@
                 </li>
                 @endif
 
-                @if (in_array(Auth::user()->role, ['Owner','Kasir']))
-                <li class="nav-header">Master Data</li>
-                <li class="nav-item">
-                    <a href="{{ route('menu.index') }}" class="nav-link {{ set_active(['menu.index', 'menu.show','menu.create','menu.edit']) }}">
-                        <i class="nav-icon fas fa-user"></i>
-                        <p>
-                            Data Menu
-                        </p>
-                    </a>
-                </li>
-
-
-                <li class="nav-item">
-                    <a href="{{ route('subkategori.index') }}" class="nav-link {{ set_active(['subkategori.index', 'subkategori.show','subkategori.create','subkategori.edit']) }}">
-                        <i class="nav-icon fas fa-user"></i>
-                        <p>
-                            Data Subkategori
-                        </p>
-                    </a>
-                </li>
-                @endif
                 @if (in_array(Auth::user()->role, ['Owner']))
                 <li class="nav-header">Manegement User</li>
                 <li class="nav-item">

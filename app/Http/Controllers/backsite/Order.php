@@ -21,11 +21,12 @@ class Order extends Controller
     {
 
         if (Auth::user()->role == 'Kasir') {
-
-            $orders = Pesanan::orderBy('id', 'desc')->get();
+            $orders = Pesanan::where('kasir', auth()->user()->id)
+                                ->Orwhere('kasir', null)
+                                ->orderBy('id', 'desc')->get();
             return view('pages.backsite.order.index', compact('orders'));
         }else if(Auth::user()->role == 'Kitchen'){
-            $orders = Pesanan::whereIn('id_status', [2,5])->orderBy('id', 'desc')->get();
+            $orders = Pesanan::whereIn('id_status', [2,7])->orderBy('id', 'desc')->get();
             return view('pages.backsite.order.index', compact('orders'));
         }else{
             $orders = Pesanan::where('id_user', auth()->user()->id)->orderBy('id', 'desc')->get();
@@ -36,14 +37,22 @@ class Order extends Controller
     public function checkout(Request $request)
     {
 
+        if($request->type == 'Dine In'){
+            $validator = Validator::make($request->all(), [
+                'nomormeja' => 'required',
+            ],[
+                'nomormeja.required' =>  'Nomor Meja Wajib Diisi'
+            ]);
+            if ($validator->fails()) {
+                return response()->json(['errors'=> $validator->errors()]);
+            }
+        }else{
+            session()->put('alamat', $request->alamat);
+        }
 
-        $validator = Validator::make($request->all(), [
-            'nomormeja' => 'required',
 
-
-        ],[
-            'nomormeja.required' =>  'Nomor Meja Wajib Diisi'
-        ]);
+        // put type to session
+        session()->put('type', $request->type);
 
         // put nomor meja to session
         session()->put('nomormeja', $request->nomormeja);
@@ -51,9 +60,7 @@ class Order extends Controller
         // add session catatan multiple order
         session()->put('catatan', $request->catatan);
 
-        if ($validator->fails()) {
-            return response()->json(['errors'=> $validator->errors()]);
-        }
+
 
         // check user is login
         if(!auth()->check()){
@@ -72,12 +79,16 @@ class Order extends Controller
         // get session cart
         $carts = session()->get('cart');
         $catatan = session()->get('catatan');
+        $type = session()->get('type');
+        $alamat = session()->get('alamat') ?? '';
+
         // dd($catatan);
         return view('pages.frontsite.order.payment', compact('carts','catatan'));
     }
 
     public function createorder(Request $request)
     {
+
 
         $tmp_file = Temporary::where('folder', $request->buktibayar)->first();
 
@@ -115,10 +126,11 @@ class Order extends Controller
             $pesanan = Pesanan::create([
                 'id_user' => auth()->user()->id,
                 'no_transaksi' => 'TRX-'.time(),
-                'nomor_meja' => session()->get('nomormeja'),
+                'nomor_meja' => session()->get('nomormeja') ?? 0,
                 'tanggal' => date('Y-m-d'),
                 'waktu' => date('H:i:s'),
                 'id_status' => 1,
+                'type' => session()->get('type'),
                 'total' => $request->total,
                 'bukti_bayar' => 'payment/'.$tmp_file->file,
                 'metode_pembayaran' => $request->metodebayar,
@@ -142,6 +154,7 @@ class Order extends Controller
                 }
             }
 
+
                 // delete session cart
                 session()->forget('cart');
                 session()->forget('nomormeja');
@@ -156,6 +169,10 @@ class Order extends Controller
     {
         $id = request()->id;
         $detail = DetailPesanan::where('id_pesanan', $id)->get();
+        // get pesanan
+        $pesanan = Pesanan::where('id', $id)->get();
+
+        // how concat array pesanan and detail pesanan
 
         $details = [];
         foreach($detail as $key => $value){
@@ -165,7 +182,10 @@ class Order extends Controller
             $details[$key]['harga'] = $value->harga;
             $details[$key]['subtotal'] = $value->subtotal;
             $details[$key]['deskripsi'] = $value->deskripsi;
+
         }
+
+
 
 
         return response()->json([
@@ -186,6 +206,11 @@ class Order extends Controller
         $pesanan = Pesanan::find($request->id);
         $pesanan->id_status = $request->status;
         $pesanan->catatan = $request->alasan;
+
+        if(Auth::user()->role == 'Kasir'){
+            $pesanan->kasir = auth()->user()->id;
+        }
+
         $pesanan->save();
 
         if($pesanan){

@@ -11,14 +11,39 @@ class Dashboard extends Controller
 {
     public function index()
     {
-        // count total pesanan
-        $totalPesanan = Pesanan::count();
-        // count total pesanan yang sudah selesai
-        $totalPesananSelesai = Pesanan::where('id_status', 6)->count();
-        // count total pesanan yang dibatalkan
-        $totalPesananDibatalkan = Pesanan::where('id_status', 4)->count();
-        // sum total pendapatan
-        $totalPendapatan = Pesanan::where('id_status', 6)->sum('total');
+        if(Auth::user()->role == 'Kasir'){
+            $today = date('Y-m-d');
+        $userId = Auth::user()->id;
+    
+        $totalPesanan = Pesanan::where('kasir', $userId)
+                       ->whereDate('created_at', $today)
+                       ->count();
+    
+        $totalPesananSelesai = Pesanan::where('id_status', 6)
+                                ->where('kasir', $userId)
+                                ->whereDate('created_at', $today)
+                                ->count();
+    
+        $totalPesananDibatalkan = Pesanan::where('id_status', 4)
+                                ->where('kasir', $userId)
+                                ->whereDate('created_at', $today)
+                                ->count();
+        
+        $totalPendapatan = Pesanan::where('id_status', 6)
+                            ->where('kasir', $userId)
+                            ->whereDate('created_at', $today)
+                            ->sum('total');
+        }else{
+            $totalPesanan = Pesanan::count();
+
+            $totalPesananSelesai = Pesanan::where('id_status', 6)
+                                ->count();
+
+            $totalPesananDibatalkan = Pesanan::where('id_status', 4)->count();
+
+            $totalPendapatan = Pesanan::where('id_status', 6)
+                            ->sum('total');
+        }
         return view('pages.backsite.dashboard.index', compact('totalPesanan', 'totalPesananSelesai', 'totalPesananDibatalkan', 'totalPendapatan'));
     }
 }

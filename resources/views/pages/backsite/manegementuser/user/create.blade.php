@@ -1,5 +1,5 @@
 @extends('layouts.app')
-@section('title', 'Tambah User')
+@section('title', 'Tambah Pengguna')
 @section('content')
 
     <!-- BEGIN: Content-->
@@ -9,12 +9,12 @@
             <div class="container-fluid">
                 <div class="row mb-2">
                     <div class="col-sm-6">
-                        <h1 class="m-0">Tambah User</h1>
+                        <h1 class="m-0">Tambah Pengguna</h1>
                     </div><!-- /.col -->
                     <div class="col-sm-6">
                         <ol class="breadcrumb float-sm-right">
-                            <li class="breadcrumb-item">User</li>
-                            <li class="breadcrumb-item active">Tambah User</li>
+                            <li class="breadcrumb-item">Pengguna</li>
+                            <li class="breadcrumb-item active">Tambah Pengguna</li>
                         </ol>
                     </div><!-- /.col -->
                 </div><!-- /.row -->

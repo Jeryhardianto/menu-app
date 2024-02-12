@@ -76,6 +76,24 @@
                                         <textarea class="form-control" name="deskripsi" placeholder="Masukan deskripsi" id="deskripsi" cols="30" rows="5">{{ $menu->deskripsi }}</textarea>
                                  
                                     </div>
+
+                                    <div class="form-group">
+                                        <label for="status">Status Menu</label>
+                                        <select class="form-control @error('status') is-invalid @enderror" id="status" name="status" style="width: 100%;">
+                                           @if($menu->is_available == 1)
+                                            <option value="1" selected>Tersedia</option>
+                                            <option value="0">Tidak Tersedia</option>
+                                            @else
+                                            <option value="1">Tersedia</option>
+                                            <option value="0" selected>Tidak Tersedia</option>
+                                           @endif
+                                        </select>
+                                        @error('status')
+                                        <span class="invalid-feedback">
+                                            <strong>{{ $message }}</strong>
+                                        </span>
+                                        @enderror
+                                    </div>
                                   
         
                                 </div>

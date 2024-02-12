@@ -38,8 +38,8 @@
                                       <label for="dari">Periode</label>
                                   <div class="d-flex mb-3">
                                       <input type="date" class="form-control mr-5" name="dari" id="dari">
-                                      <span>Sampai</span> 
-                                      <input type="date" class="form-control ml-5" name="sampai" id="sampai"> 
+                                      <span>Sampai</span>
+                                      <input type="date" class="form-control ml-5" name="sampai" id="sampai">
                                   </div>
                                   </div>
                                  <div class="col-6 mb-3">
@@ -50,8 +50,8 @@
                                       <option value="2">In Progress</option>
                                       <option value="3">Reject</option>
                                       <option value="4">Cancel</option>
-                                      <option value="5">Delivered</option>
                                       <option value="6">Completed</option>
+                                        <option value="7">Order Is Not Correct</option>
                                   </select>
                                  </div>
                                  <button type="submit" class="btn btn-primary btn-block">Filter</button>
@@ -66,7 +66,8 @@
                                         <tr>
                                             <th>No</th>
                                             <th>No Transaksi</th>
-                                            <th>Nomor Meja</th>
+                                            <th>Pengguna</th>
+                                            <th>Alamat</th>
                                             <th>Total</th>
                                             <th>Status</th>
 
@@ -79,9 +80,11 @@
                                         <tr>
                                             <td>{{ $loop->iteration }}</td>
                                             <td>{{ $order->no_transaksi }}</td>
-                                            <td>{{ $order->nomor_meja }}</td>
+                                            <td>{{ $order->pengguna->nama }}</td>
+                                            <td>{{ $order->pengguna->alamat }}</td>
+                                            <td>Rp. {{ Illuminate\Support\Number::format($order->total,  locale: 'de') }}</td>
                                             <td>
-                                                
+
                                                 @if ($order->statusLabel->status == 'PENDING')
                                                 <span class="badge badge-warning">Cek Transaksi</span>
                                             @elseif($order->statusLabel->status == 'IN PROGRESS')
@@ -94,17 +97,20 @@
                                                 <span class="badge badge-danger">Pesanan Dibatalkan</span>
                                                 <br>
                                                 <span class="badge badge-danger">Alasan: {{ $order->catatan }}</span>
-                                            @elseif($order->statusLabel->status == 'DEVLIVERED')
-                                                <span class="badge badge-success">Pesanan Diterima</span>
+
                                             @elseif($order->statusLabel->status == 'COMPLETED')
                                                 <span class="badge badge-success">Pesanan Selesai</span>
+                                            @elseif($order->statusLabel->status == 'ORDER IS NOT CORRECT')
+                                                <span class="badge badge-danger">Pesanan Tidak Sesuai</span>
+                                                <br>
+                                                <span class="badge badge-danger">Alasan: {{ $order->catatan }}</span>
                                             @endif
                                             </td>
-                                            <td>Rp. {{ Illuminate\Support\Number::format($order->total,  locale: 'de') }}</td>
+
                                             <td>{{ $order->created_at }}</td>
                                         </tr>
                                         @endforeach
-                                      
+
                                     </tbody>
                                 </table>
                         </div>
@@ -120,12 +126,16 @@
 @push('javascript-internal')
 <script>
     $(document).ready(function () {
-     
+
         $('#table').DataTable({
             "order": [[ 0, "desc" ]],
             dom: 'Bfrtip',
             buttons: [
-                'pdf'
+                {
+                    extend: 'pdf',
+                    text: 'Cetak Laporan',
+                    className:"btn btn-warning",
+                }
             ]
         });
 
