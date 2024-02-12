@@ -32,8 +32,10 @@
                     <!-- /.card-header -->
 
                     <div class="card-body">
+                        @if(in_array(Auth::user()->role, ['Owner']))
                         <a href="{{ route('menu.create') }}" class="btn btn-primary"><i class="fas fa-plus"></i> Tambah
                             Data Menu</a>
+                        @endif
                  
                         <table id="example1" class="table table-bordered table-striped">
                             <thead>
@@ -45,7 +47,9 @@
                                     <th>Deskripsi</th>
                                     <th>Foto</th>
                                     <th>Status</th>
+                                    @if(in_array(Auth::user()->role, ['Owner']))
                                     <th>Action</th>
+                                    @endif
                                 </tr>
                             </thead>
                             <tbody>
@@ -66,8 +70,8 @@
                                         <span class="badge badge-danger">Tidak Tersedia</span>
                                       @endif
                                         </td>
+                                        @if(in_array(Auth::user()->role, ['Owner']))
                                         <td>
-                                        
                                 
                                         <a href="{{ route('menu.edit', $mn->id ) }}" class="btn btn-success"><i
                                                 class="fas fa-pen-square"></i> Edit</a>
@@ -82,6 +86,8 @@
                                         
                                         
                                         </td>
+                                        @endif
+
                                     </tr>
                                     
                                 @endforeach
@@ -96,6 +102,7 @@
                     </div>
                     <!-- /.card-body -->
                 </div>
+                @if (in_array(Auth::user()->role, ['Owner']))
                <div class="card card-primary ">
                  <div class="card-header" data-card-widget="collapse">
                    <h3 class="card-title">Log Menu</h3>
@@ -162,6 +169,7 @@
                     </table>
                  </div>
                </div>
+                @endif
             </div><!-- /.container-fluid -->
         </section>
         <!-- /.content -->
