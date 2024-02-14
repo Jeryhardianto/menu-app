@@ -46,12 +46,12 @@
                                   <label for="status">Status</label>
                                   <select class="form-control" name="status" id="status">
                                       <option value="">Pilih Status</option>
-                                      <option value="1">Pending</option>
-                                      <option value="2">In Progress</option>
-                                      <option value="3">Reject</option>
-                                      <option value="4">Cancel</option>
-                                      <option value="6">Completed</option>
-                                        <option value="7">Order Is Not Correct</option>
+                                      <option value="1">Cek Transaksi</option>
+                                      <option value="2">Dalam Proses</option>
+                                      <option value="3">Pesanan Ditolak</option>
+                                      <option value="4">Pesanan Dibatalkan</option>
+                                      <option value="6">Pesanan Selesai</option>
+                                      <option value="7">Pesanan Tidak Sesuai</option>
                                   </select>
                                  </div>
                                  <button type="submit" class="btn btn-primary btn-block">Filter</button>
