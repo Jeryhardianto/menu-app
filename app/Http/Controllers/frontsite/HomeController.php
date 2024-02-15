@@ -6,7 +6,6 @@ use App\Models\Menu;
 use App\Models\Subkategori;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
-use Illuminate\Support\Facades\Auth;
 use RealRashid\SweetAlert\Facades\Alert;
 
 class HomeController extends Controller

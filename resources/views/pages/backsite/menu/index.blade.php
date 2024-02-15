@@ -14,7 +14,7 @@
                     <div class="col-sm-6">
                         <ol class="breadcrumb float-sm-right">
                             {{-- <li class="breadcrumb-item"><a href="#">Home</a></li> --}}
-                            <li class="breadcrumb-item active">Menu</li>
+                            <li class="breadcrumb-item ">Menu</li>
                         </ol>
                     </div><!-- /.col -->
                 </div><!-- /.row -->
@@ -46,7 +46,7 @@
                                     <th>Harga</th>
                                     <th>Deskripsi</th>
                                     <th>Foto</th>
-                                    <th>Status</th>
+                                    <th>Stok</th>
                                     @if(in_array(Auth::user()->role, ['Owner']))
                                     <th>Action</th>
                                     @endif
@@ -64,10 +64,10 @@
                                             <img src="{{ env('AWS_URL') }}{{ $mn->gambar }}" width="200" alt="{{ $mn->nama_menu }}">
                                         </td>
                                         <td>
-                                            @if ($mn->is_available == 1)
-                                        <span class="badge badge-success">Tersedia</span>
-                                      @else
-                                        <span class="badge badge-danger">Tidak Tersedia</span>
+                                       @if ($mn->stok == 0)
+                                       <span class="badge badge-danger">Tidak Tersedia</span>
+                                       @else
+                                       <span class="badge badge-success">{{ $mn->stok }}</span>
                                       @endif
                                         </td>
                                         @if(in_array(Auth::user()->role, ['Owner']))

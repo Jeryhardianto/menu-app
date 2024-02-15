@@ -78,21 +78,15 @@
                                     </div>
 
                                     <div class="form-group">
-                                        <label for="status">Status Menu</label>
-                                        <select class="form-control @error('status') is-invalid @enderror" id="status" name="status" style="width: 100%;">
-                                           @if($menu->is_available == 1)
-                                            <option value="1" selected>Tersedia</option>
-                                            <option value="0">Tidak Tersedia</option>
-                                            @else
-                                            <option value="1">Tersedia</option>
-                                            <option value="0" selected>Tidak Tersedia</option>
-                                           @endif
-                                        </select>
-                                        @error('status')
+                                        <label for="status">Stok</label>
+                                        <input type="number" id="stok" name="stok" value="{{ old('stok', $menu->stok) }}"
+                                        class="form-control @error('stok') is-invalid @enderror" placeholder="Masukan stok">
+                                        @error('stok')
                                         <span class="invalid-feedback">
                                             <strong>{{ $message }}</strong>
                                         </span>
                                         @enderror
+                                      
                                     </div>
                                   
         

@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers\backsite;
 
-use AWS\CRT\Log;
+
 use App\Models\LogMenu;
 use App\Models\Temporary;
 use Illuminate\Http\Request;
@@ -42,10 +42,13 @@ public function store(Request $request)
         'namamenu' => 'required',
         'subkategori' => 'not_in:0',
         'harga' => 'required',
+        'stok'  => 'required|numeric'
     ], [
         'namamenu.required' => 'Nama Menu Harus Diisi',
         'subkategori.not_in' => 'Pilih Ketagori',
         'harga.required' => 'Harga Harus Diisi',
+        'stok.required' => 'Stok Harus Diisi',
+        'stok.numeric' => 'Stok Harus Angka',
     ]);
 
     if ($validator->fails()) {
@@ -57,7 +60,7 @@ public function store(Request $request)
         'id_subkategori' => $request->subkategori,
         'harga' => $request->harga,
         'deskripsi' => $request->deskripsi,
-        'is_available' => $request->status,
+        'stok' => $request->stok,
     ];
 
     $defaultImage = 'menu/default.svg';
@@ -119,10 +122,13 @@ public function update(Request $request, string $id)
         'namamenu' => 'required',
         'subkategori' => 'not_in:0',
         'harga' => 'required',
+        'stok'  => 'required|numeric'
     ],[
         'namamenu.required' =>  'Nama Menu Harus Diisi',
         'subkategori.not_in' =>  'Pilih Ketagori',
         'harga.required' =>  'Harga Harus Diisi',
+        'stok.required' => 'Stok Harus Diisi',
+        'stok.numeric' => 'Stok Harus Angka',
     ]);
 
     if ($validator->fails()) {
@@ -134,7 +140,7 @@ public function update(Request $request, string $id)
         'id_subkategori' => $request->subkategori,
         'harga' => $request->harga,
         'deskripsi' => $request->deskripsi,
-        'is_available' => $request->status,
+        'stok' => $request->stok,
     ];
 
     if ($tmp_file = Temporary::where('folder', $request->gambarmenu)->first()) {

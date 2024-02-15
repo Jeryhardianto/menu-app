@@ -40,10 +40,10 @@
                                     <i class="fas fa-shopping-cart"></i> Order
                                 </button>
                                 <br>
-                              @if ($ms->is_available == 1)
-                                <span class="badge badge-success">Tersedia</span>
+                              @if ($ms->stok == 0)
+                              <span class="badge badge-danger">Tidak Tersedia</span>
                               @else
-                                <span class="badge badge-danger">Tidak Tersedia</span>
+                              <span class="badge badge-success">Tersedia</span>
                               @endif
                                 <span class="badge badge-warning">{{ $ms->GetSubkategori->GetKategori->kategori }}</span>
                                 <span class="badge badge-primary">{{ $ms->GetSubkategori->subketagori }}</span>
@@ -80,14 +80,16 @@
                                 <p><b><span id="harga"></span></b></p>
                                 <form action="{{ route('addtocart') }}" method="post">
                                     @csrf
-                                    <div class="input-group mb-3 row">
+                                    <div class="input-group mb-3 row" id="qty-label">
                                         <input type="text" id="id_menu" hidden name="id_nemu">
-                                        <input type="text" id="qty" data-mask="000" name="qty" class="form-control col-xs-2" placeholder="Qty" value="0">
+                                        <input type="number"  id="qty" data-mask="000" name="qty" class="form-control col-xs-2" placeholder="Qty" value="0" min="0">
                                         <div class="input-group-append">
                                             <button  class="btn btn-warning text-white" type="submit" id="button-addon2"><i class="fas fa-shopping-cart"></i> Tambah</button>
                                         </div>
                                     </div>
                                 </form>
+                                <p><b><span id="stok-label"></span></b></p>
+
                             </div>
                         </div>
                     </div>
@@ -139,6 +141,16 @@
                 $('#deskripsi').html(response.data.deskripsi);
                 $('#harga').html(response.data.harga);
                 $('#gambardetail').html('<img width="100%" src="'+aws_url+''+response.data.gambar+'" class="img-fluid" alt="Responsive image">');
+                let stok = response.data.stok;
+                if(stok > 0){
+                    $('#qty-label').attr('hidden', false);
+                    $('#stok-label').html('<span class="badge badge-success">Tersedia</span>');
+                    $('#qty').attr('max', stok);
+                    
+                }else{
+                    $('#qty-label').attr('hidden', true);
+                    $('#stok-label').html('<span class="badge badge-danger">Tidak Tersedia</span>');
+                }
             });
 
         }

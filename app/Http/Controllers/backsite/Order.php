@@ -2,13 +2,14 @@
 
 namespace App\Http\Controllers\backsite;
 
+use App\Models\Menu;
 use App\Models\Pesanan;
 use App\Models\Temporary;
 use Illuminate\Http\Request;
 use App\Models\DetailPesanan;
 use Illuminate\Http\Response;
-use Illuminate\Validation\Rule;
 
+use Illuminate\Validation\Rule;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
@@ -150,7 +151,10 @@ class Order extends Controller
                         'subtotal' => $cart['qty'] * $cart['harga'],
                         'deskripsi' => $catatan[$j]
                    ]);
-                     $j++;
+                   $j++;
+                   //  kurangi stok di table menu
+                   Menu::where('id', $cart['id'])->decrement('stok', $cart['qty']);
+
                 }
             }
 
