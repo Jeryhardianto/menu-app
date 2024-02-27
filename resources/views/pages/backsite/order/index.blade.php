@@ -167,7 +167,7 @@
                             <option value="">Pilih Status</option>
                            @if (Auth::user()->role == 'Kasir')
                             <option value="2">IN PROGRESS</option>
-                            <option value="3">REJECT</option>
+                            {{-- <option value="3">REJECT</option> --}}
                             <option value="4">CANCEL</option>
                             @elseif (Auth::user()->role == 'Kitchen')
                             <option value="6">COMPLETED</option>

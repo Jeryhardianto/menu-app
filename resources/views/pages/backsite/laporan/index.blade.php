@@ -48,7 +48,7 @@
                                       <option value="">Pilih Status</option>
                                       <option value="1">Cek Transaksi</option>
                                       <option value="2">Dalam Proses</option>
-                                      <option value="3">Pesanan Ditolak</option>
+                                      {{-- <option value="3">Pesanan Ditolak</option> --}}
                                       <option value="4">Pesanan Dibatalkan</option>
                                       <option value="6">Pesanan Selesai</option>
                                       <option value="7">Pesanan Tidak Sesuai</option>
