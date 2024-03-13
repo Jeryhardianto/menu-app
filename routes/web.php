@@ -32,7 +32,8 @@ use App\Http\Controllers\backsite\Cron;
 */
 
 
-Route::get('/', [HomeController::class, 'index'])->name('homepage');
+Route::redirect('/', '/pilihmenu');
+// Route::get('/', [HomeController::class, 'index'])->name('homepage');
 Route::get('/pilihmenu', [HomeController::class, 'landingPage'])->name('pilihmenu');
 Route::get('/makanan', [HomeController::class, 'makanan'])->name('makanan');
 Route::get('/minuman', [HomeController::class, 'minuman'])->name('minuman');
