@@ -84,7 +84,7 @@
                                     </div>
                                 @endif
                                 <h4>Metode Pembayaran</h4>
-                                <select class="form-control form-control-lg mb-4" name="metodebayar">
+                                <select class="form-control form-control-lg mb-4" name="metodebayar" id="metodebayar">
                                     <option value="0">-- Pilih Metode Pembayaran --</option>
                                     <option value="qris">QRIS </option>
                                     <option value="tf">TRANSFER BANK</option>
@@ -151,11 +151,15 @@
                                         </div>
                                     </div>
                                 </div>
-                                <div>
+                                <div id="uploadbuktibayar">
                                     <label for="buktibayar">Upload bukti pembayaran :</label>
                                     <br>
                                     <input type="file" id="buktibayar" class="filepond" name="buktibayar" accept="image/*">
                                 </div> 
+                                <div>
+                                    <label for="deskripsi">Catatan Kasir</label>
+                                    <textarea name="deskripsi" id="deskripsi" cols="30" rows="5" class="form-control"></textarea>
+                                </div>
 
                             </div>
                         </div>
@@ -187,4 +191,15 @@
     <!-- END: Content-->
 
 @endsection
-
+@push('javascript-internal')
+    <script>
+    $('#metodebayar').on('change', function() {
+        var metodebayar = $(this).val();
+        if (metodebayar == 'cash') {
+            $('#uploadbuktibayar').hide();
+        } else {
+            $('#uploadbuktibayar').show();
+        }
+    });
+    </script>
+@endpush

@@ -11,8 +11,8 @@ class Dashboard extends Controller
 {
     public function index()
     {
+        $today = date('Y-m-d');
         if(Auth::user()->role == 'Kasir'){
-            $today = date('Y-m-d');
         $userId = Auth::user()->id;
     
         $totalPesanan = Pesanan::where('kasir', $userId)
@@ -34,15 +34,19 @@ class Dashboard extends Controller
                             ->whereDate('created_at', $today)
                             ->sum('total');
         }else{
-            $totalPesanan = Pesanan::count();
+            $totalPesanan = Pesanan::whereDate('created_at', $today)->count();
 
             $totalPesananSelesai = Pesanan::where('id_status', 6)
-                                ->count();
+            ->whereDate('created_at', $today)
+            ->count();
 
-            $totalPesananDibatalkan = Pesanan::where('id_status', 4)->count();
+            $totalPesananDibatalkan = Pesanan::where('id_status', 4)
+            ->whereDate('created_at', $today)
+            ->count();
 
             $totalPendapatan = Pesanan::where('id_status', 6)
-                            ->sum('total');
+            ->whereDate('created_at', $today)
+            ->sum('total');
         }
         return view('pages.backsite.dashboard.index', compact('totalPesanan', 'totalPesananSelesai', 'totalPesananDibatalkan', 'totalPendapatan'));
     }

@@ -18,6 +18,7 @@ use App\Http\Controllers\frontsite\HomeController;
 use App\Http\Controllers\UserManegement\RoleController;
 use App\Http\Controllers\UserManegement\UserController;
 use App\Http\Controllers\Auth\AuthenticatedSessionController;
+use App\Http\Controllers\backsite\Cron;
 
 /*
 |--------------------------------------------------------------------------
@@ -32,6 +33,10 @@ use App\Http\Controllers\Auth\AuthenticatedSessionController;
 
 
 Route::get('/', [HomeController::class, 'index'])->name('homepage');
+Route::get('/pilihmenu', [HomeController::class, 'landingPage'])->name('pilihmenu');
+Route::get('/makanan', [HomeController::class, 'makanan'])->name('makanan');
+Route::get('/minuman', [HomeController::class, 'minuman'])->name('minuman');
+
 Route::get('/getdetailmenu/{id}', [HomeController::class, 'getDetailMenu'])->name('getdetailmenu');
 
 // add to cart
@@ -63,6 +68,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/order', [Order::class, 'index'])->name('order');
     Route::post('/orderdetail', [Order::class, 'getDetailPesanan'])->name('orderdetail');
     Route::patch('/order/status', [Order::class, 'updatestatus'])->name('updatestatus');
+    Route::put('/order/complate', [Order::class, 'statuscomplate'])->name('statuscomplate');
 
     // Payment
     Route::get('/payment', [Order::class, 'payment'])->name('payment');
@@ -88,6 +94,9 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
 // Filepond
 Route::post('uploads/tmpupload', [FileUploadController::class, 'tmpUpload'])->name('uploads.process');
+
+// execute cron
+Route::get('/setcron', [Cron::class, 'index']);
 
 
 

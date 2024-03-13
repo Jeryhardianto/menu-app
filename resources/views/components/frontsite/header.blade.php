@@ -85,7 +85,7 @@
                     <div class="col-sm-10">
                         <select name="type" id="type" class="form-control">
                             <option value="Dine In">DINE IN</option>
-                            <option value="Take Away">TAKEAWAY</option>
+                            {{-- <option value="Take Away">TAKEAWAY</option> --}}
                         </select>
                     </div>
                   
@@ -101,7 +101,17 @@
                 <div class="form-group row" id="nomormeja-label">
                     <label for="nomormeja" class="col-sm-2 col-form-label">Nomor Meja</label>
                     <div class="col-sm-10">
-                      <input type="text" data-mask="00" class="form-control" name="nomormeja" id="nomormeja" value="{{ $nomormeja }}" placeholder="Nomor Meja">
+                      {{-- <input type="text" data-mask="00" class="form-control" name="nomormeja" id="nomormeja" value="{{ $nomormeja }}" placeholder="Nomor Meja"> --}}
+                      <select name="nomormeja" id="nomormeja" class="form-control">
+                        @foreach ($nomormejas as $no)
+                            @php
+                                $available = $no->is_available == 1 ? 'disabled' : '';
+                                $sts_available = $no->is_available == 1 ? '<h4 style="color:red">Meja Tidak Tersedia</h4>' :'<h4 style="color:green">Meja Tersedia</h4>';
+                            @endphp
+                            <option value="{{ $no->id }}" {{ $available }}>{{ $no->nomormeja }}  {!! $sts_available !!}
+                            </option>
+                        @endforeach
+                    </select>
                     </div>
                   </div>
                   @php
@@ -109,7 +119,6 @@
                       $i = 0;
                   @endphp
                 @foreach ($cart['data'] as $key => $item )
-
                 <div class="card">
                     <div class="card-body">
                        <div class="row">
@@ -202,8 +211,6 @@
             $('#total').val({{ $grandtotal }});
             $('#total-label').html('{{ Rupiah($grandtotal) }}');
             $('#pengiriman-form').prop('hidden', true);
-            
-
         }
     });
 </script>

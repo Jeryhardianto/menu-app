@@ -66,6 +66,7 @@
                                         <tr>
                                             <th>No</th>
                                             <th>No Transaksi</th>
+                                            <th>List Pesanan</th>
                                             <th>Pengguna</th>
                                             <th>Alamat</th>
                                             <th>Total</th>
@@ -80,6 +81,11 @@
                                         <tr>
                                             <td>{{ $loop->iteration }}</td>
                                             <td>{{ $order->no_transaksi }}</td>
+                                            <td>
+                                                @foreach ($order->detailPesanan as $ps )
+                                                     <li>{{ $ps->menu->nama_menu }}</li>
+                                                @endforeach
+                                            </td>
                                             <td>{{ $order->pengguna->nama }}</td>
                                             <td>{{ $order->pengguna->alamat }}</td>
                                             <td>Rp. {{ Illuminate\Support\Number::format($order->total,  locale: 'de') }}</td>

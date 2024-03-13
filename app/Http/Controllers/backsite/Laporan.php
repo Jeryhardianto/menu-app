@@ -22,6 +22,7 @@ class Laporan extends Controller
             
             if ($status == "") {
                 $orders = Pesanan::all();
+                
             }else{
            
                 $orders = Pesanan::where('id_status', $status)->get();

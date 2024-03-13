@@ -84,7 +84,7 @@
                                     </div>
                                 @endif
                                 <h4>Metode Pembayaran</h4>
-                                <select class="form-control form-control-lg mb-4" name="metodebayar">
+                                <select class="form-control form-control-lg mb-4" id="metodebayar" name="metodebayar">
                                     <option value="0">-- Pilih Metode Pembayaran --</option>
                                     <option value="qris">QRIS </option>
                                     <option value="tf">TRANSFER BANK</option>
@@ -187,4 +187,3 @@
     <!-- END: Content-->
 
 @endsection
-

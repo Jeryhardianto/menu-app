@@ -30,6 +30,7 @@ class Pesanan extends Model
         'id_pengguna' => 'string',
         'id_status' => 'integer',
         'nomor_meja' => 'integer',
+        'catatatan_kasir' => 'string',
         'type' => 'string',
         'total' => 'integer',
     ];

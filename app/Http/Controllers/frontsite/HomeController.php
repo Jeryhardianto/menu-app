@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\frontsite;
 
 use App\Models\Menu;
+use App\Models\NomorMeja;
 use App\Models\Subkategori;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
@@ -10,19 +11,21 @@ use RealRashid\SweetAlert\Facades\Alert;
 
 class HomeController extends Controller
 {
-    public function index(Request $request)
+    public function makanan(Request $request)
     {
+        $title = "Makanan";
 
-
-        $subkategoris   = Subkategori::all();
+        $subkategoris   = Subkategori::where('id_kategori', 1)->get();
         $menus = Menu::query();
 
         if ($request->has('subkategori')) {
             $subkategoriId = $request->input('subkategori');
             $menus->where('id_subkategori', $subkategoriId);
+        }else{
+            $menus->where('id_subkategori', 2);
         }
 
-        $menus = $menus->get();
+        $menus = $menus->orderBy('terjual', 'desc')->get();
 
         $cart = session()->get('cart');
 
@@ -48,11 +51,57 @@ class HomeController extends Controller
         $nomormeja = session()->get('nomormeja');
         // catatan
         $catatan = session()->get('catatan');
+        $nomormejas = NomorMeja::all();
+       
 
       
-        return view('pages.frontsite.index', compact('subkategoris', 'menus', 'cart', 'nomormeja', 'catatan'));
+        return view('pages.frontsite.index', compact('title','subkategoris', 'menus', 'cart', 'nomormeja', 'catatan', 'nomormejas'));
     }
 
+    public function minuman(Request $request)
+    {
+        $title = "Minuman";
+        $subkategoris   = Subkategori::where('id_kategori', 2)->get();
+        $menus = Menu::query();
+
+        if ($request->has('subkategori')) {
+            $subkategoriId = $request->input('subkategori');
+            $menus->where('id_subkategori', $subkategoriId);
+        }else{
+            $menus->where('id_subkategori', 5);
+        }
+
+        $menus = $menus->orderBy('terjual', 'desc')->get();
+
+        $cart = session()->get('cart');
+
+        if (!$cart) {
+            $cart = [
+                'sumQty' => 0,
+                'data' => []
+            ];
+        }else{
+        //    sum qty
+            $sumQty = 0;
+            foreach ($cart as $item) {
+                $sumQty += $item['qty'];
+            }
+
+            $cart = [
+                'sumQty' => $sumQty,
+                'data' => $cart
+            ];
+        }
+
+
+        $nomormeja = session()->get('nomormeja');
+        // catatan
+        $catatan = session()->get('catatan');
+        $nomormejas = NomorMeja::all();
+
+      
+        return view('pages.frontsite.index', compact('title','subkategoris', 'menus', 'cart', 'nomormeja', 'catatan', 'nomormejas'));
+    }
     public function getDetailMenu($id)
     {
 
@@ -103,6 +152,47 @@ class HomeController extends Controller
         session()->put('cart', $cart);
         Alert::success('Sukses', 'Berhasil menghapus menu dari keranjang');
         return redirect()->back();
+    }
+
+    public function landingPage( Request $request )
+    {
+        $subkategoris   = Subkategori::all();
+        $menus = Menu::query();
+
+        if ($request->has('subkategori')) {
+            $subkategoriId = $request->input('subkategori');
+            $menus->where('id_subkategori', $subkategoriId);
+        }
+
+        $menus = $menus->orderBy('terjual', 'desc')->get();
+
+        $cart = session()->get('cart');
+
+        if (!$cart) {
+            $cart = [
+                'sumQty' => 0,
+                'data' => []
+            ];
+        }else{
+        //    sum qty
+            $sumQty = 0;
+            foreach ($cart as $item) {
+                $sumQty += $item['qty'];
+            }
+
+            $cart = [
+                'sumQty' => $sumQty,
+                'data' => $cart
+            ];
+        }
+
+
+        $nomormeja = session()->get('nomormeja');
+        // catatan
+        $catatan = session()->get('catatan');
+        $nomormejas = NomorMeja::all();
+
+        return view('pages.frontsite.landingpage', compact('subkategoris', 'menus', 'cart', 'nomormeja', 'catatan', 'nomormejas'));
     }
 
 }

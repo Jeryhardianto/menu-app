@@ -9,7 +9,7 @@
             <div class="container-fluid">
                 <div class="row mb-2">
                     <div class="col-sm-6">
-                        <h1 class="m-0">Menu</h1>
+                        <h1 class="m-0">{{ $title }}</h1>
                     </div><!-- /.col -->
 
                 </div><!-- /.row -->
@@ -20,7 +20,6 @@
         <!-- Main content -->
         <section class="content">
             <div class="container-fluid">
-                <a href="/" class="btn btn-primary justify-between mb-3">Semua</a>
                 @foreach ($subkategoris as $sk )
                 <a href="{{ '?subkategori='.$sk->id }}" class="btn btn-primary justify-between mb-3">{{ $sk->subketagori }}</a>
                 @endforeach
@@ -32,6 +31,7 @@
                         <div class="card">
                             <img src="{{ env('AWS_URL') }}{{ $ms->gambar }}" width="200" class="card-img-top"
                                 alt="...">
+                              
                             <div class="card-body">
                                 <h5 class="card-title "><b>{{ $ms->nama_menu }}</b></h5>
                                 <br>
@@ -42,11 +42,19 @@
                                 <br>
                               @if ($ms->stok == 0)
                               <span class="badge badge-danger">Tidak Tersedia</span>
+                              <span class="badge badge-danger">Stok : {{ $ms->stok }}</span>
                               @else
                               <span class="badge badge-success">Tersedia</span>
+                              <span class="badge badge-success">Stok : {{ $ms->stok }}</span>
                               @endif
                                 <span class="badge badge-warning">{{ $ms->GetSubkategori->GetKategori->kategori }}</span>
                                 <span class="badge badge-primary">{{ $ms->GetSubkategori->subketagori }}</span>
+                                @if ($ms->terjual >= 1)
+                                <span class="badge badge-secondary  float-right">Terjual: {{ $ms->terjual }}</span>
+                                @endif
+                                @if($ms->terjual >= 100)
+                                <span class="badge badge-danger  float-right mr-2"><i class="fas fa-award"></i> Best Seller</span>
+                                @endif
 
                             </div>
                         </div>
@@ -88,7 +96,10 @@
                                         </div>
                                     </div>
                                 </form>
-                                <p><b><span id="stok-label"></span></b></p>
+                                <div class="d-flex">
+                                    <p><b><span id="stok-label"></span></b></p> &nbsp;
+                                    <p><b><span id="stok-qty"></span></b></p>
+                                </div>
 
                             </div>
                         </div>
@@ -145,11 +156,13 @@
                 if(stok > 0){
                     $('#qty-label').attr('hidden', false);
                     $('#stok-label').html('<span class="badge badge-success">Tersedia</span>');
+                    $('#stok-qty').html('<span class="badge badge-success">Stok : '+stok+'</span>');
                     $('#qty').attr('max', stok);
                     
                 }else{
                     $('#qty-label').attr('hidden', true);
                     $('#stok-label').html('<span class="badge badge-danger">Tidak Tersedia</span>');
+                    $('#stok-qty').html('<span class="badge badge-danger">Stok : '+stok+'</span>');
                 }
             });
 

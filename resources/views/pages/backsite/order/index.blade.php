@@ -97,11 +97,24 @@
                                                         <span class="badge badge-danger">Alasan: {{ $item->catatan }}</span>
                                                         @endif
                                                     </td>
-                                                    <td>
+                                                    <td class="d-flex">
                                                         <a href="#" id="detail" onclick="detail('{{ $item->id }}','{{ $item->no_transaksi }}')"
                                                             class="btn btn-info btn-sm">Detail</a>
+
+                                                        @if (Auth::user()->role == 'Kasir')
                                                         <a href="#" id="buktibayar" onclick="buktibayar('{{ $item->id }}','{{ $item->no_transaksi }}','{{ $item->bukti_bayar }}')"
                                                             class="btn btn-info btn-sm">Bukti Bayar</a>
+                                                        @endif
+
+                                                        @if(Auth::user()->role == 'Kitchen')
+                                                        <form action="{{ route('statuscomplate') }}" method="post">
+                                                            @csrf
+                                                            @method('put')
+                                                            <input type="text" name="id" value="{{ $item->id }}" hidden>
+                                                            <button type="submit" class="btn btn-primary btn-sm ml-2">Complate</button>
+                                                        </form>
+                                                        @endif
+
                                                     </td>
                                                 </tr>
                                             @endforeach

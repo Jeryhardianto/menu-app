@@ -4,17 +4,16 @@ namespace App\Http\Controllers\backsite;
 
 use App\Models\Menu;
 use App\Models\Pesanan;
+use App\Models\NomorMeja;
 use App\Models\Temporary;
 use Illuminate\Http\Request;
 use App\Models\DetailPesanan;
 use Illuminate\Http\Response;
-
-use Illuminate\Validation\Rule;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
+use RealRashid\SweetAlert\Facades\Alert;
 use Illuminate\Support\Facades\Validator;
-use Illuminate\Console\View\Components\Alert;
 
 class Order extends Controller
 {
@@ -89,42 +88,17 @@ class Order extends Controller
 
     public function createorder(Request $request)
     {
-
-
-        $tmp_file = Temporary::where('folder', $request->buktibayar)->first();
-
-              // create validation select payment and upload payment
+        $metodebayar = $request->metodebayar;
+        if($metodebayar == 'cash'){
+            // create validation select payment and upload payment
             $validator = Validator::make($request->all(), [
-                'metodebayar' => 'not_in:0',
-                'buktibayar' => 'required',
+                'metodebayar' => 'not_in:0'
             ],[
-                'metodebayar.not_in' =>  'Pilih Metode Pembayaran',
-                'buktibayar.required' =>  'Upload Bukti Pembayaran',
+                'metodebayar.not_in' =>  'Pilih Metode Pembayaran'
             ]);
 
-            if ($validator->fails()) {
-                return redirect()->route('payment')->withErrors($validator);
-              }
-
-        if($tmp_file){
-
-            // validation file
-            if($tmp_file->file == ''){
-                return redirect()->route('payment')->withErrors('Upload Bukti Pembayaran');
-            }
-
-
-            // get file from storage
-            $file = Storage::get('images/temp/'.$tmp_file->folder.'/'.$tmp_file->file);
-            // copy from storage to s3
-            Storage::disk('s3')->put('payment/'.$tmp_file->file, $file);
-
-            // delete file and folder from storage
-            Storage::delete('images/temp/'.$tmp_file->folder.'/'.$tmp_file->file);
-            // remove directory
-            Storage::deleteDirectory('images/temp/'.$tmp_file->folder);
-            // create save to database table pesanan
-            $pesanan = Pesanan::create([
+             // create save to database table pesanan
+             $pesanan = Pesanan::create([
                 'id_user' => auth()->user()->id,
                 'no_transaksi' => 'TRX-'.time(),
                 'nomor_meja' => session()->get('nomormeja') ?? 0,
@@ -133,7 +107,8 @@ class Order extends Controller
                 'id_status' => 1,
                 'type' => session()->get('type'),
                 'total' => $request->total,
-                'bukti_bayar' => 'payment/'.$tmp_file->file,
+                'bukti_bayar' => 'cash',
+                'catatan_kasir' => $request->deskripsi,
                 'metode_pembayaran' => $request->metodebayar,
             ]);
 
@@ -158,6 +133,9 @@ class Order extends Controller
                 }
             }
 
+            NomorMeja::where('id', session()->get('nomormeja'))->update([
+                'is_available' => true
+            ]);
 
                 // delete session cart
                 session()->forget('cart');
@@ -166,8 +144,93 @@ class Order extends Controller
 
                 // direct to payment page with success message
                 return redirect()->route('paymentsuccess');
-            }
-    }
+
+        }else{
+               // create validation select payment and upload payment
+          $validator = Validator::make($request->all(), [
+            'metodebayar' => 'not_in:0',
+            'buktibayar' => 'required',
+        ],[
+            'metodebayar.not_in' =>  'Pilih Metode Pembayaran',
+            'buktibayar.required' =>  'Upload Bukti Pembayaran',
+        ]);
+  
+        if ($validator->fails()) {
+            return redirect()->route('payment')->withErrors($validator);
+        }
+    
+           $tmp_file = Temporary::where('folder', $request->buktibayar)->first();
+           if($tmp_file){
+   
+               // validation file
+               if($tmp_file->file == ''){
+                   return redirect()->route('payment')->withErrors('Upload Bukti Pembayaran');
+               }
+   
+   
+               // get file from storage
+               $file = Storage::get('images/temp/'.$tmp_file->folder.'/'.$tmp_file->file);
+               // copy from storage to s3
+               Storage::disk('s3')->put('payment/'.$tmp_file->file, $file);
+   
+               // delete file and folder from storage
+               Storage::delete('images/temp/'.$tmp_file->folder.'/'.$tmp_file->file);
+               // remove directory
+               Storage::deleteDirectory('images/temp/'.$tmp_file->folder);
+               // create save to database table pesanan
+               $pesanan = Pesanan::create([
+                   'id_user' => auth()->user()->id,
+                   'no_transaksi' => 'TRX-'.time(),
+                   'nomor_meja' => session()->get('nomormeja') ?? 0,
+                   'tanggal' => date('Y-m-d'),
+                   'waktu' => date('H:i:s'),
+                   'id_status' => 1,
+                   'type' => session()->get('type'),
+                   'total' => $request->total,
+                   'bukti_bayar' => 'payment/'.$tmp_file->file,
+                   'catatan_kasir' => $request->deskripsi,
+                   'metode_pembayaran' => $request->metodebayar,
+               ]);
+   
+               // create save to database detail pesanan
+               if($pesanan){
+                   $catatan = session()->get('catatan');
+   
+                   $j = 0;
+                   foreach(session()->get('cart') as $key => $cart){
+                      DetailPesanan::create([
+                           'id_pesanan' => $pesanan->id,
+                           'id_menu' => $cart['id'],
+                           'jumlah' => $cart['qty'],
+                           'harga' => $cart['harga'],
+                           'subtotal' => $cart['qty'] * $cart['harga'],
+                           'deskripsi' => $catatan[$j]
+                      ]);
+                      $j++;
+                      //  kurangi stok di table menu
+                      Menu::where('id', $cart['id'])->decrement('stok', $cart['qty']);
+   
+                   }
+               }
+
+               NomorMeja::where('id', session()->get('nomormeja'))->update([
+                   'is_available' => true
+               ]);
+   
+   
+                   // delete session cart
+                   session()->forget('cart');
+                   session()->forget('nomormeja');
+                   session()->forget('catatan');
+   
+                   // direct to payment page with success message
+                   return redirect()->route('paymentsuccess');
+               }
+       
+        }
+
+   
+        }
 
     public function getDetailPesanan()
     {
@@ -228,5 +291,24 @@ class Order extends Controller
                 'message' => 'Status Pesanan Gagal Diubah'
             ],Response::HTTP_OK);
         }
+    }
+    // status complate
+    public function statuscomplate(Request $request)
+    {
+    
+        $pesanan = Pesanan::find($request->id);
+        $pesanan->id_status = 6;
+        $pesanan->save();
+
+        $detailPesanan = DetailPesanan::where('id_pesanan', $request->id)->get();
+        foreach($detailPesanan as $key => $value){
+            $menu = Menu::where('id', $value->id_menu)->first();
+            $menu->terjual = $menu->terjual + $value->jumlah;
+            $menu->save();
+        }
+
+        Alert::success('Sukses', 'Pesanan Selesai!');
+        return redirect()->route('order');
+
     }
 }
