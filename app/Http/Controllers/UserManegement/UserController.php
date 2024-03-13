@@ -120,7 +120,8 @@ class UserController extends Controller
     public function update(Request $request, User $user)
     {
         $validator = Validator::make($request->all(),[
-            "role" => "required"
+            "role" => "required",
+            "name" => "required|string",
        ],
        [],
         );
@@ -132,6 +133,7 @@ class UserController extends Controller
         DB::beginTransaction();
         try {
          User::where('id', $user->id)->update([
+            'nama' => $request->name,
             'updated_at' => date('Y-m-d H:i:s')
          ]);
          $user->syncRoles($request->role);

@@ -34,8 +34,8 @@
                                 Kembali</a>
                             <div class="form-group">
                                 <label for="name">Nama User</label>
-                                <input type="text" id="name" name="name" value="{{ old('name', $user->name) }}"
-                                    class="form-control @error('name') is-invalid @enderror" placeholder="Masukan nama  user" readonly>
+                                <input type="text" id="name" name="name" value="{{ old('name', $user->nama) }}"
+                                    class="form-control @error('name') is-invalid @enderror" placeholder="Masukan nama  user">
                                 @error('name')
                                     <span class="invalid-feedback">
                                         <strong>{{ $message }}</strong>
