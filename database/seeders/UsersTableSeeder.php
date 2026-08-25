@@ -15,7 +15,7 @@ class UsersTableSeeder extends Seeder
     public function run()
     {
         
-        \App\Models\User::factory()->create([
+        \App\Models\User::create([
             
             'nama' => 'SuperAdmin',
             'email' => 'superadmin@example.com',
@@ -26,7 +26,7 @@ class UsersTableSeeder extends Seeder
             'role' => 'Owner'
         ]);
 
-        \App\Models\User::factory()->create([
+        \App\Models\User::create([
             
             'nama' => 'Kasir',
             'email' => 'kasir@example.com',
@@ -37,7 +37,7 @@ class UsersTableSeeder extends Seeder
             'role' => 'Kasir'
         ]);
 
-        \App\Models\User::factory()->create([
+        \App\Models\User::create([
             
             'nama' => 'Kitchen',
             'email' => 'kitchen@example.com',
@@ -48,7 +48,7 @@ class UsersTableSeeder extends Seeder
             'role' => 'Kitchen'
         ]);
 
-        \App\Models\User::factory()->create([
+        \App\Models\User::create([
             
             'nama' => 'Pelanggan 1',
             'email' => 'pelanggan1@example.com',
