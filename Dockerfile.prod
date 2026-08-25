@@ -1,0 +1,22 @@
+# Image produksi untuk vm-gpu: php-fpm di belakang nginx (pola dev-ops/home-server/sipenda.md).
+# Dockerfile (tanpa .prod) adalah stack dev `php -S`, bukan ini.
+# 8.2 dipilih supaya berbagi layer dengan stack PHP lain di vm-gpu; batas atasnya
+# 8.3 karena nette/schema di composer.lock.
+FROM php:8.2-fpm-alpine AS base
+COPY --from=mlocati/php-extension-installer:latest /usr/bin/install-php-extensions /usr/local/bin/
+# intl: helper Rupiah() memakai NumberFormatter. Tanpa itu tiap halaman menu 500.
+RUN install-php-extensions pdo_mysql intl opcache \
+    && printf 'upload_max_filesize=16M\npost_max_size=16M\nmemory_limit=256M\n' \
+       > /usr/local/etc/php/conf.d/app.ini
+WORKDIR /var/www/html
+
+FROM base AS vendor
+COPY --from=composer:2 /usr/bin/composer /usr/bin/composer
+COPY composer.json composer.lock* ./
+RUN composer install --no-dev --no-scripts --no-autoloader --prefer-dist --no-interaction
+COPY . .
+RUN composer dump-autoload --optimize --no-dev
+
+FROM base
+COPY --from=vendor --chown=www-data:www-data /var/www/html .
+RUN chown -R www-data:www-data storage bootstrap/cache

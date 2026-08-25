@@ -1,5 +1,9 @@
 .git
-node_modules
+.env
+.env.*
 vendor
-storage/logs
-storage/framework/cache
+node_modules
+public/storage
+storage/logs/*.log
+storage/framework/cache/data/*
+storage/app/public/*
