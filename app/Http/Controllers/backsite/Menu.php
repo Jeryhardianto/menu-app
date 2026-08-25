@@ -67,7 +67,7 @@ public function store(Request $request)
 
     if ($tmpFile = Temporary::where('folder', $request->gambarmenu)->first()) {
         $file = Storage::get('images/temp/' . $tmpFile->folder . '/' . $tmpFile->file);
-        Storage::disk('s3')->put('menu/' . $tmpFile->file, $file);
+        Storage::disk('public')->put('menu/' . $tmpFile->file, $file);
         Storage::delete('images/temp/' . $tmpFile->folder . '/' . $tmpFile->file);
         Storage::deleteDirectory('images/temp/' . $tmpFile->folder);
         $menuData['gambar'] = 'menu/' . $tmpFile->file;
@@ -145,7 +145,7 @@ public function update(Request $request, string $id)
 
     if ($tmp_file = Temporary::where('folder', $request->gambarmenu)->first()) {
         $file = Storage::get('images/temp/'.$tmp_file->folder.'/'.$tmp_file->file);
-        Storage::disk('s3')->put('menu/'.$tmp_file->file, $file);
+        Storage::disk('public')->put('menu/'.$tmp_file->file, $file);
         Storage::delete('images/temp/'.$tmp_file->folder.'/'.$tmp_file->file);
         Storage::deleteDirectory('images/temp/'.$tmp_file->folder);
         $data['gambar'] = 'menu/'.$tmp_file->file;

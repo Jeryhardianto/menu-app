@@ -29,7 +29,8 @@
                     <div class="col-sm-6 col-md-4">
 
                         <div class="card">
-                            <img src="{{ env('AWS_URL') }}{{ $ms->gambar }}" width="200" class="card-img-top"
+                            <img src="{{ $ms->gambar_url }}" width="200" class="card-img-top"
+                                onerror="this.onerror=null;this.src='{{ asset('image/menu-default.svg') }}'"
                                 alt="...">
                               
                             <div class="card-body">
@@ -143,7 +144,6 @@
             var data = {
                 id: id
             };
-            const aws_url = '{{ env('AWS_URL') }}';
             const result = ajaxPromise(url,data,method);
 
             result.then(function(response) {
@@ -151,7 +151,7 @@
                 $('#judul').html(response.data.nama_menu);
                 $('#deskripsi').html(response.data.deskripsi);
                 $('#harga').html(response.data.harga);
-                $('#gambardetail').html('<img width="100%" src="'+aws_url+''+response.data.gambar+'" class="img-fluid" alt="Responsive image">');
+                $('#gambardetail').html('<img width="100%" src="'+response.data.gambar_url+'" class="img-fluid" alt="Responsive image" onerror="this.onerror=null;this.src=\'{{ asset('image/menu-default.svg') }}\'">');
                 let stok = response.data.stok;
                 if(stok > 0){
                     $('#qty-label').attr('hidden', false);

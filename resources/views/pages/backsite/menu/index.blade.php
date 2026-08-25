@@ -61,7 +61,7 @@
                                         <td>Rp. {{ Number::format($mn->harga, locale: 'de') }}</td>
                                         <td>{{ $mn->deskripsi }}</td>
                                         <td>
-                                            <img src="{{ env('AWS_URL') }}{{ $mn->gambar }}" width="200" alt="{{ $mn->nama_menu }}">
+                                            {{-- <img src="{{ env('AWS_URL') }}{{ $mn->gambar }}" width="200" alt="{{ $mn->nama_menu }}"> --}}
                                         </td>
                                         <td>
                                        @if ($mn->stok == 0)

@@ -355,7 +355,7 @@
                 $('#notrx-b').html(notrx);
                 $('#id').val(id);
                 var html = '';
-                html += '<img src="{{ env('AWS_URL') }}' + buktibayar + '" class="img-fluid" alt="Bukti Bayar">';
+                html += '<img src="{{ asset('storage') }}/' + buktibayar + '" class="img-fluid" alt="Bukti Bayar">';
 
                 $('.modal-body').html(html);
 

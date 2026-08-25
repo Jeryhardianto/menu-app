@@ -58,7 +58,7 @@
                                         <td>{{ $user->created_at }}</td>
                                         <td>
                                             @if ($user->foto)
-                                                <img src="{{env('AWS_URL')}}{{$user->foto}}" alt="Foto User"
+                                                <img src="{{ image_url($user->foto) }}" alt="Foto User"
                                                     width="50px">
                                             @endif
                                         <td>

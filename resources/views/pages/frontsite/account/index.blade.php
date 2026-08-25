@@ -84,7 +84,7 @@
                                         <input type="file" id="fotoprofile" class="filepond mr-5" name="fotoprofile" accept="image/*">
                                     </div>
                                     <div class="form-group mb-5">
-                                        <img src="{{env('AWS_URL')}}{{$user->foto}}" class="rounded img-fluid mx-auto d-block" alt="{{$user->nama}}" width="500px" >
+                                        <img src="{{ image_url($user->foto) }}" class="rounded img-fluid mx-auto d-block" alt="{{$user->nama}}" width="500px" >
                                     </div>
                                 </div>
                             </div>

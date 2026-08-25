@@ -171,7 +171,7 @@ class Order extends Controller
                // get file from storage
                $file = Storage::get('images/temp/'.$tmp_file->folder.'/'.$tmp_file->file);
                // copy from storage to s3
-               Storage::disk('s3')->put('payment/'.$tmp_file->file, $file);
+               Storage::disk('public')->put('payment/'.$tmp_file->file, $file);
    
                // delete file and folder from storage
                Storage::delete('images/temp/'.$tmp_file->folder.'/'.$tmp_file->file);

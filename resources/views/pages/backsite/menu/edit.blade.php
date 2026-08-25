@@ -98,7 +98,7 @@
                                    <label for="gambarmenu">Gambar menu </label>
                                    <input type="file" id="gambarmenu" class="filepond mr-5" name="gambarmenu" accept="image/*">
                                    <br>
-                                      <img src="{{ env('AWS_URL') }}{{ $menu->gambar }}" alt="" width="400">
+                                      {{-- <img src="{{ env('AWS_URL') }}{{ $menu->gambar }}" alt="" width="400"> --}}
                                 </div>
                             </div>
                         </div>
