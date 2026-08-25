@@ -22,6 +22,8 @@ class DatabaseSeeder extends Seeder
             SubkategoriTableSeeder::class,
             MenusTableSeeder::class,
             StatusTableSeeder::class,
+            NomorMejaTableSeeder::class,
+            PesananTableSeeder::class,
         ]);
     }
 }
