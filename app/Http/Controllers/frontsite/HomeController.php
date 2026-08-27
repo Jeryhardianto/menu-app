@@ -3,148 +3,122 @@
 namespace App\Http\Controllers\frontsite;
 
 use App\Models\Menu;
-use App\Models\NomorMeja;
+use App\Models\Pesanan;
 use App\Models\Subkategori;
+use App\Models\DetailPesanan;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use RealRashid\SweetAlert\Facades\Alert;
 
 class HomeController extends Controller
 {
-    public function makanan(Request $request)
+    public function makanan()
     {
-        $title = "Makanan";
-
-        $subkategoris   = Subkategori::where('id_kategori', 1)->get();
-        $menus = Menu::query();
-
-        if ($request->has('subkategori')) {
-            $subkategoriId = $request->input('subkategori');
-            $menus->where('id_subkategori', $subkategoriId);
-        }else{
-            $menus->where('id_subkategori', 2);
-        }
-
-        $menus = $menus->orderBy('terjual', 'desc')->get();
-
-        $cart = session()->get('cart');
-
-        if (!$cart) {
-            $cart = [
-                'sumQty' => 0,
-                'data' => []
-            ];
-        }else{
-        //    sum qty
-            $sumQty = 0;
-            foreach ($cart as $item) {
-                $sumQty += $item['qty'];
-            }
-
-            $cart = [
-                'sumQty' => $sumQty,
-                'data' => $cart
-            ];
-        }
-
-
-        $nomormeja = session()->get('nomormeja');
-        // catatan
-        $catatan = session()->get('catatan');
-        $nomormejas = NomorMeja::all();
-       
-
-      
-        return view('pages.frontsite.index', compact('title','subkategoris', 'menus', 'cart', 'nomormeja', 'catatan', 'nomormejas'));
+        return $this->katalog(1, 'Makanan');
     }
 
-    public function minuman(Request $request)
+    public function minuman()
     {
-        $title = "Minuman";
-        $subkategoris   = Subkategori::where('id_kategori', 2)->get();
-        $menus = Menu::query();
-
-        if ($request->has('subkategori')) {
-            $subkategoriId = $request->input('subkategori');
-            $menus->where('id_subkategori', $subkategoriId);
-        }else{
-            $menus->where('id_subkategori', 5);
-        }
-
-        $menus = $menus->orderBy('terjual', 'desc')->get();
-
-        $cart = session()->get('cart');
-
-        if (!$cart) {
-            $cart = [
-                'sumQty' => 0,
-                'data' => []
-            ];
-        }else{
-        //    sum qty
-            $sumQty = 0;
-            foreach ($cart as $item) {
-                $sumQty += $item['qty'];
-            }
-
-            $cart = [
-                'sumQty' => $sumQty,
-                'data' => $cart
-            ];
-        }
-
-
-        $nomormeja = session()->get('nomormeja');
-        // catatan
-        $catatan = session()->get('catatan');
-        $nomormejas = NomorMeja::all();
-
-      
-        return view('pages.frontsite.index', compact('title','subkategoris', 'menus', 'cart', 'nomormeja', 'catatan', 'nomormejas'));
+        return $this->katalog(2, 'Minuman');
     }
+
+    /**
+     * Katalog satu kategori: semua subkategori ditumpuk jadi section dalam satu
+     * halaman, dilompati lewat tombol Menu, bukan disaring per halaman.
+     */
+    private function katalog($idKategori, $title)
+    {
+        $subkategoris = Subkategori::where('id_kategori', $idKategori)
+            ->with(['menus' => function ($q) {
+                $q->orderByDesc('terjual')->orderBy('nama_menu');
+            }])
+            ->get()
+            ->filter(function ($sk) {
+                return $sk->menus->isNotEmpty();
+            })
+            ->values();
+
+        return view('pages.frontsite.index', [
+            'title' => $title,
+            'subkategoris' => $subkategoris,
+            'seringDibeli' => $this->menuPernahDipesan(),
+        ]);
+    }
+
+    /**
+     * Halaman custom pembelian. Kalau menunya sudah ada di keranjang, isian
+     * lama dipakai sebagai nilai awal supaya halaman ini sekalian jadi edit.
+     */
+    public function custom($id)
+    {
+        $menu = Menu::findOrFail($id);
+        $item = session()->get('cart')[$menu->id] ?? null;
+
+        return view('pages.frontsite.custom', compact('menu', 'item'));
+    }
+
+    /**
+     * Id menu yang pernah dipesan user ini, sumber badge "Sering dibeli lagi".
+     */
+    private function menuPernahDipesan()
+    {
+        if (!auth()->check()) {
+            return [];
+        }
+
+        return DetailPesanan::whereIn('id_pesanan', Pesanan::where('id_user', auth()->id())->select('id'))
+            ->distinct()
+            ->pluck('id_menu')
+            ->all();
+    }
+
     public function getDetailMenu($id)
     {
-
         $menu = Menu::find($id);
-        $menu->harga = Rupiah($menu->harga);
-        return response()->json(
-            [
-                'status' => 'true',
-                'data' => $menu
-            ], 200);
 
+        return response()->json([
+            'status' => 'true',
+            'data' => $menu,
+        ], 200);
     }
 
-    // put session to cart
     public function addToCart(Request $request)
     {
+        $menu = Menu::find($request->id_nemu);
+        $qty = (int) $request->qty;
 
+        if (!$menu) {
+            Alert::error('Error', 'Menu tidak ditemukan');
+            return redirect()->back();
+        }
 
-        $cart = session()->get('cart');
-
-        $id = $request->id_nemu;
-        $qty = $request->qty;
-
-        // cek qty apakah lebih dari 1
         if ($qty < 1) {
             Alert::error('Error', 'Qty tidak boleh kurang dari 1');
             return redirect()->back();
         }
 
-        $menu = Menu::find($id);
+        if ($qty > $menu->stok) {
+            Alert::error('Error', 'Stok ' . $menu->nama_menu . ' tinggal ' . $menu->stok);
+            return redirect()->back();
+        }
 
-        $cart[$id] = [
-            "id" => $menu->id,
-            "nama" => $menu->nama_menu,
-            "harga" => $menu->harga,
-            "qty" => $qty
+        $cart = session()->get('cart', []);
+
+        // catatan ikut item, bukan array terpisah yang dicocokkan lewat urutan
+        $cart[$menu->id] = [
+            'id' => $menu->id,
+            'nama' => $menu->nama_menu,
+            'harga' => $menu->harga,
+            'qty' => $qty,
+            'catatan' => $request->input('catatan') ?: null,
         ];
         session()->put('cart', $cart);
+
         Alert::success('Sukses', 'Berhasil menambahkan menu ke keranjang');
-        return redirect()->back();
+
+        return redirect()->route(optional($menu->GetSubkategori)->id_kategori == 2 ? 'minuman' : 'makanan');
     }
 
-    // delete session cart by id
     public function deleteCart($id)
     {
         $cart = session()->get('cart');
@@ -153,46 +127,4 @@ class HomeController extends Controller
         Alert::success('Sukses', 'Berhasil menghapus menu dari keranjang');
         return redirect()->back();
     }
-
-    public function landingPage( Request $request )
-    {
-        $subkategoris   = Subkategori::all();
-        $menus = Menu::query();
-
-        if ($request->has('subkategori')) {
-            $subkategoriId = $request->input('subkategori');
-            $menus->where('id_subkategori', $subkategoriId);
-        }
-
-        $menus = $menus->orderBy('terjual', 'desc')->get();
-
-        $cart = session()->get('cart');
-
-        if (!$cart) {
-            $cart = [
-                'sumQty' => 0,
-                'data' => []
-            ];
-        }else{
-        //    sum qty
-            $sumQty = 0;
-            foreach ($cart as $item) {
-                $sumQty += $item['qty'];
-            }
-
-            $cart = [
-                'sumQty' => $sumQty,
-                'data' => $cart
-            ];
-        }
-
-
-        $nomormeja = session()->get('nomormeja');
-        // catatan
-        $catatan = session()->get('catatan');
-        $nomormejas = NomorMeja::all();
-
-        return view('pages.frontsite.landingpage', compact('subkategoris', 'menus', 'cart', 'nomormeja', 'catatan', 'nomormejas'));
-    }
-
 }

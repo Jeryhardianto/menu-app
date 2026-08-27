@@ -57,8 +57,16 @@ class Order extends Controller
         // put nomor meja to session
         session()->put('nomormeja', $request->nomormeja);
 
-        // add session catatan multiple order
-        session()->put('catatan', $request->catatan);
+        // catatan disimpan menempel di item keranjang (dikunci id menu), bukan
+        // array terpisah yang dicocokkan lewat urutan saat menyimpan pesanan
+        $cart = session()->get('cart', []);
+        $catatan = (array) $request->catatan;
+
+        foreach ($cart as $id => $item) {
+            $cart[$id]['catatan'] = $catatan[$id] ?? ($item['catatan'] ?? null);
+        }
+
+        session()->put('cart', $cart);
 
 
 
@@ -78,12 +86,8 @@ class Order extends Controller
     {
         // get session cart
         $carts = session()->get('cart');
-        $catatan = session()->get('catatan');
-        $type = session()->get('type');
-        $alamat = session()->get('alamat') ?? '';
 
-        // dd($catatan);
-        return view('pages.frontsite.order.payment', compact('carts','catatan'));
+        return view('pages.frontsite.order.payment', compact('carts'));
     }
 
     public function createorder(Request $request)
@@ -114,9 +118,6 @@ class Order extends Controller
 
             // create save to database detail pesanan
             if($pesanan){
-                $catatan = session()->get('catatan');
-
-                $j = 0;
                 foreach(session()->get('cart') as $key => $cart){
                    DetailPesanan::create([
                         'id_pesanan' => $pesanan->id,
@@ -124,9 +125,8 @@ class Order extends Controller
                         'jumlah' => $cart['qty'],
                         'harga' => $cart['harga'],
                         'subtotal' => $cart['qty'] * $cart['harga'],
-                        'deskripsi' => $catatan[$j]
+                        'deskripsi' => $cart['catatan'] ?? null
                    ]);
-                   $j++;
                    //  kurangi stok di table menu
                    Menu::where('id', $cart['id'])->decrement('stok', $cart['qty']);
 
@@ -140,7 +140,6 @@ class Order extends Controller
                 // delete session cart
                 session()->forget('cart');
                 session()->forget('nomormeja');
-                session()->forget('catatan');
 
                 // direct to payment page with success message
                 return redirect()->route('paymentsuccess');
@@ -194,9 +193,6 @@ class Order extends Controller
    
                // create save to database detail pesanan
                if($pesanan){
-                   $catatan = session()->get('catatan');
-   
-                   $j = 0;
                    foreach(session()->get('cart') as $key => $cart){
                       DetailPesanan::create([
                            'id_pesanan' => $pesanan->id,
@@ -204,9 +200,8 @@ class Order extends Controller
                            'jumlah' => $cart['qty'],
                            'harga' => $cart['harga'],
                            'subtotal' => $cart['qty'] * $cart['harga'],
-                           'deskripsi' => $catatan[$j]
+                           'deskripsi' => $cart['catatan'] ?? null
                       ]);
-                      $j++;
                       //  kurangi stok di table menu
                       Menu::where('id', $cart['id'])->decrement('stok', $cart['qty']);
    
@@ -221,8 +216,7 @@ class Order extends Controller
                    // delete session cart
                    session()->forget('cart');
                    session()->forget('nomormeja');
-                   session()->forget('catatan');
-   
+      
                    // direct to payment page with success message
                    return redirect()->route('paymentsuccess');
                }

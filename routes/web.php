@@ -32,12 +32,12 @@ use App\Http\Controllers\backsite\Cron;
 */
 
 
-Route::redirect('/', '/pilihmenu');
+Route::redirect('/', '/makanan');
 // Route::get('/', [HomeController::class, 'index'])->name('homepage');
-Route::get('/pilihmenu', [HomeController::class, 'landingPage'])->name('pilihmenu');
 Route::get('/makanan', [HomeController::class, 'makanan'])->name('makanan');
 Route::get('/minuman', [HomeController::class, 'minuman'])->name('minuman');
 
+Route::get('/custom/{id}', [HomeController::class, 'custom'])->name('custom');
 Route::get('/getdetailmenu/{id}', [HomeController::class, 'getDetailMenu'])->name('getdetailmenu');
 
 // add to cart

@@ -17,4 +17,9 @@ class Subkategori extends Model
         return $this->belongsTo(Kategori::class, 'id_kategori', 'id');
     }
 
+    public function menus()
+    {
+        return $this->hasMany(Menu::class, 'id_subkategori', 'id');
+    }
+
 }

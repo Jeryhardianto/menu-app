@@ -27,6 +27,7 @@
                         <div class="card">
                             <div class="card-body">
                                 <h4>Detail Pesanan</h4>
+                                <div class="table-responsive">
                                 <table class="table table-bordered">
                                     <thead>
                                         <tr>
@@ -66,6 +67,7 @@
                                         </tr>
                                     </tbody>
                                 </table>
+                                </div>
 
                             </div>
                         </div>

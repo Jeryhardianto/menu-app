@@ -29,7 +29,7 @@
                             <div class="row">
                                 <div class="col-md-6">
                                     <div class="card-body">
-                                        <a href="{{ route('homepage') }}" class="btn btn-danger mb-3"><i class="fas fa-backward"></i>
+                                        <a href="{{ route('makanan') }}" class="btn btn-danger mb-3"><i class="fas fa-backward"></i>
                                             Kembali</a>
                                         <div class="form-group">
                                             <label for="nama">Nama</label>
@@ -95,6 +95,15 @@
 
                             </div>
                         </form>
+
+                        <div class="card-footer bg-transparent border-top-0">
+                            <form action="{{ route('logout') }}" method="post" role="logout">
+                                @csrf
+                                <button type="submit" class="btn btn-outline-danger">
+                                    <i class="fas fa-sign-out-alt"></i> Logout
+                                </button>
+                            </form>
+                        </div>
                     </div>
                 </div>
 

@@ -7,50 +7,13 @@
 
     <!-- Navbar -->
     <nav class="main-header navbar navbar-expand navbar-white navbar-light">
-        <!-- Left navbar links -->
-        <ul class="navbar-nav">
-            <li class="nav-item">
-                <a class="nav-link" data-widget="pushmenu" href="#" role="button"><i class="fas fa-bars"></i></a>
-            </li>
-        </ul>
+        <!-- Brand: menggantikan logo yang dulu ada di sidebar -->
+        <a href="{{ route('makanan') }}" class="navbar-brand">
+            <img src="{{ asset('logo.jpg') }}" alt="" class="brand-image img-circle elevation-2" style="opacity: .9">
+            <span class="brand-text font-weight-bold d-none d-sm-inline">{{ env('APP_NAME') }}</span>
+        </a>
 
-        <!-- Right navbar links -->
-        <ul class="navbar-nav ml-auto">
-            <!-- Navbar Search -->
-            <!-- Notifications Dropdown Menu -->
-           {{-- if page payment hide button cart  --}}
-            @unless (in_array(Route::currentRouteName(), ['payment', 'paymentsuccess', 'order', 'myaccount']))
-            <button type="button" class="btn btn-warning" data-toggle="modal" data-target="#modalCart">
-                <i class="fas fa-shopping-cart"></i>
-                <span class="badge badge-light">{{ $cart['sumQty'] }}</span>
-            </button>
-            @endif
-            {{-- end if page payment hide button cart  --}}
-
-            <li class="nav-item dropdown">
-                @auth
-                @if (Auth::user()->role == 'Pelanggan')
-                <form action="{{ route('logout') }}" method="post" role="logout">
-                    @csrf
-                    <button type="submit" class="btn btn-danger ml-2 nav-link text-white">
-                        <i class="fas fa-sign-out-alt" style="color: #ffffff"></i> Logout
-                    </button>
-                </form>
-                @endif
-                @endauth
-
-                @guest
-                    <a href="{{ route('login') }}" class="btn btn-primary ml-2 nav-link text-white">
-                        <i class="fas fa-sign-out-alt" style="color: #ffffff"></i> Login
-                    </a>
-
-                @endguest
-
-            </li>
-
-        </ul>
     </nav>
-    @unless (in_array(Route::currentRouteName(), ['payment', 'paymentsuccess', 'order', 'myaccount']))
     {{-- Modal Cart --}}
     <div class="modal fade" id="modalCart" tabindex="-1" role="dialog"  data-backdrop="static" aria-labelledby="modalCartTitle" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
@@ -114,10 +77,7 @@
                     </select>
                     </div>
                   </div>
-                  @php
-                      $grandtotal = 0;
-                      $i = 0;
-                  @endphp
+                  @php $grandtotal = 0; @endphp
                 @foreach ($cart['data'] as $key => $item )
                 <div class="card">
                     <div class="card-body">
@@ -125,14 +85,14 @@
                             <div class="col-md-6">
                               {{ $item['nama']  }} x {{ $item['qty'] }} @ {{ Rupiah($item['harga'])  }}
                                 <input type="text" hidden name="id[]" value="{{ $item['id'] }}">
-                              <textarea class="form-control" name="catatan[]" id="catatan" placeholder="Catatan...." cols="20" rows="2">{{ @$catatan[$i] }}</textarea>
+                              <label class="sr-only" for="catatan-{{ $item['id'] }}">Catatan {{ $item['nama'] }}</label>
+                              <textarea class="form-control" name="catatan[{{ $item['id'] }}]" id="catatan-{{ $item['id'] }}" placeholder="Catatan...." cols="20" rows="2">{{ $item['catatan'] ?? '' }}</textarea>
                             </div>
                             <div class="col-md-6 ">
                             @php
                                 $harga = $item['harga'] * $item['qty'];
                                 $grandtotal += $harga;
                                 echo Rupiah($harga);
-                                $i++;
                             @endphp
 
                               <a class="badge badge-danger" href="{{ route('deletecart',$item['id']) }}">Hapus</a>
@@ -145,27 +105,27 @@
                 @endforeach
 
 
-                  <table class="table-responsive mt-3">
+                  <table class="mt-3 w-100">
                     <tr>
-                        <td width="10%"><b>Sub Total</b></td>
+                        <td class="pr-2 text-nowrap"><b>Sub Total</b></td>
                         <td>:</td>
-                        <td width="50%">
+                        <td class="pl-2">
                             <b id="Subtotal-label">{{ Rupiah($grandtotal) }}</b>
                             <input type="text" hidden  id="Subtotal" name="Subtotal" value="{{ $grandtotal }}">
                         </td>
                     </tr>
                         <tr id="pengiriman-form">
-                            <td width="10%"><b>Biaya Pengiriman</b></td>
+                            <td class="pr-2 text-nowrap"><b>Biaya Pengiriman</b></td>
                             <td>:</td>
-                            <td width="50%">
+                            <td class="pl-2">
                                 <b id="pengiriman-label">Rp 0</b>
                                 <input type="text" hidden  id="pengiriman" name="pengiriman">
                             </td>
                         </tr>
                         <tr>
-                            <td width="10%"><b>Total</b></td>
+                            <td class="pr-2 text-nowrap"><b>Total</b></td>
                             <td>:</td>
-                            <td width="50%">
+                            <td class="pl-2">
                                 <b id="total-label">{{ Rupiah($grandtotal) }}</b>
                                 <input type="text" hidden  id="total" name="total" value="{{ $grandtotal }}">
                             </td>
@@ -181,12 +141,32 @@
         </div>
     </div>
     </div>
-    @endif
     <!-- End Modal Cart -->
 </div>
-@unless (in_array(Route::currentRouteName(), ['payment', 'paymentsuccess', 'order', 'myaccount']))
 @push('javascript-internal')
 <script>
+    function checkout() {
+        $.post('{{ route('checkout') }}', $('#checkout-form').serialize() + '&_token={{ csrf_token() }}')
+            .done(function(response) {
+                if (response.success) {
+                    window.location.href = '{{ route('payment') }}';
+                } else if (response.errors && response.errors.nomormeja) {
+                    $('#nomormeja').addClass('is-invalid');
+                    Swal.fire({
+                        title: 'Gagal',
+                        text: response.errors.nomormeja,
+                        icon: 'error',
+                        confirmButtonText: 'OK'
+                    });
+                } else {
+                    window.location.href = '{{ route('login') }}';
+                }
+            })
+            .fail(function(error) {
+                console.log('Error :' + error);
+            });
+    }
+
     $(document).ready(function() {
         $('#alamat-label').prop('hidden', true);
         $('#pengiriman-form').prop('hidden', true);
@@ -216,5 +196,26 @@
 </script>
 
 @endpush
-@endif
 
+@push('javascript-internal')
+<script>
+    $(document).ready(function() {
+        $("form[role='logout']").submit(function(event) {
+            event.preventDefault();
+            Swal.fire({
+                title: 'Apakah anda yakin ingin keluar ?',
+                text: "",
+                icon: 'question',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'Keluar'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    event.target.submit();
+                }
+            })
+        });
+    });
+</script>
+@endpush

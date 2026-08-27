@@ -13,16 +13,18 @@
     <style>
         body{
             font-family: quicksand;
+            /* samakan dengan .content-wrapper supaya area footer tidak jadi pita putih */
+            background-color: #f4f6f9;
         }
     </style>
 </head>
-<body class="hold-transition sidebar-mini layout-fixed">
+<body class="hold-transition layout-top-nav">
     @include('sweetalert::alert')
 
     @include('components.frontsite.header')
-    @include('components.frontsite.menu')
         @yield('content')
     @include('components.frontsite.footer')
+    @include('components.frontsite.bottom-nav')
 
     @stack('before-script')
         @include('includes.backsite.script')

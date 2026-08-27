@@ -32,7 +32,7 @@ class AuthenticatedSessionController extends Controller
         $request->authenticate();
         $request->session()->regenerate();
         if (Auth::user()->role == 'Pelanggan') {
-            return redirect()->intended(route('pilihmenu'));
+            return redirect()->intended(route('makanan'));
         }elseif (in_array(Auth::user()->role, ['Kasir', 'Kitchen', 'Owner'])) {
             return redirect()->intended(route('dashboard'));
         }
