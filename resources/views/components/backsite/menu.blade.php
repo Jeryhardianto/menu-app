@@ -3,9 +3,9 @@
 <aside class="main-sidebar elevation-4" style="background-color: #2557e2">
     <!-- Brand Logo -->
     <a href="#" class="brand-link" >
-        <img src="{{ asset('logo.jpg') }}" alt="{{ env('APP_NAME') }}" class="brand-image img-circle elevation-3"
+        <img src="{{ asset('logo.svg') }}" alt="{{ config('app.name') }}" class="brand-image img-circle elevation-3"
             style="opacity: .8">
-        <span class="brand-text font-weight-bold text-white">{{ env('APP_NAME') }}</span>
+        <span class="brand-text font-weight-bold text-white">{{ config('app.name') }}</span>
     </a>
 
     <!-- Sidebar -->

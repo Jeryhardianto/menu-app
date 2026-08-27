@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512" role="img" aria-label="Sajian">
+  <rect width="512" height="512" fill="#1b46b4"/>
+  <circle cx="256" cy="196" r="20" fill="#ffffff"/>
+  <path d="M158 312a98 98 0 0 1 196 0z" fill="#ffffff"/>
+  <rect x="135" y="323" width="242" height="29" rx="14.5" fill="#ffffff"/>
+</svg>

@@ -33,6 +33,24 @@ use App\Http\Controllers\backsite\Cron;
 
 
 Route::redirect('/', '/makanan');
+Route::get('/manifest.json', fn () => response()->json([
+    'name' => config('app.name'),
+    'short_name' => config('app.name'),
+    'description' => 'Katalog dan pemesanan menu',
+    'lang' => 'id',
+    'start_url' => '/',
+    'scope' => '/',
+    'display' => 'standalone',
+    'orientation' => 'portrait',
+    'background_color' => '#f4f6f9',
+    'theme_color' => '#1b46b4',
+    'icons' => [
+        ['src' => '/icons/icon-192.png', 'sizes' => '192x192', 'type' => 'image/png', 'purpose' => 'any maskable'],
+        ['src' => '/icons/icon-512.png', 'sizes' => '512x512', 'type' => 'image/png', 'purpose' => 'any maskable'],
+        ['src' => '/logo.svg', 'sizes' => 'any', 'type' => 'image/svg+xml'],
+    ],
+]))->name('manifest');
+
 // Route::get('/', [HomeController::class, 'index'])->name('homepage');
 Route::get('/makanan', [HomeController::class, 'makanan'])->name('makanan');
 Route::get('/minuman', [HomeController::class, 'minuman'])->name('minuman');

@@ -3,9 +3,9 @@
 <head>
 
     @include('includes.backsite.meta')
-    <title>@yield('title') | {{ env('APP_NAME') }}</title>
+    <title>@yield('title') | {{ config('app.name') }}</title>
 
-    <link rel="icon" href="{{ asset('logo.jpg') }}" type="image/png" sizes="16x16">
+    <link rel="icon" href="{{ asset('logo.svg') }}" type="image/svg+xml">
     @vite('resources/js/app.js')
     @stack('before-style')
       @include('includes.backsite.style')

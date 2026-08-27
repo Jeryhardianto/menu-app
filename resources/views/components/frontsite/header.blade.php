@@ -9,8 +9,8 @@
     <nav class="main-header navbar navbar-expand navbar-white navbar-light">
         <!-- Brand: menggantikan logo yang dulu ada di sidebar -->
         <a href="{{ route('makanan') }}" class="navbar-brand">
-            <img src="{{ asset('logo.jpg') }}" alt="" class="brand-image img-circle elevation-2" style="opacity: .9">
-            <span class="brand-text font-weight-bold d-none d-sm-inline">{{ env('APP_NAME') }}</span>
+            <img src="{{ asset('logo.svg') }}" alt="" class="brand-image img-circle elevation-2" style="opacity: .9">
+            <span class="brand-text font-weight-bold d-none d-sm-inline">{{ config('app.name') }}</span>
         </a>
 
     </nav>

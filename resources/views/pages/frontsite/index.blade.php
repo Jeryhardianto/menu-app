@@ -569,7 +569,7 @@
 
     document.getElementById('gfShare').addEventListener('click', function () {
         var nama = $('#gfDetail').data('nama') || document.title;
-        var data = { title: nama, text: nama + ' - {{ env('APP_NAME') }}', url: location.href };
+        var data = { title: nama, text: nama + ' - {{ config('app.name') }}', url: location.href };
 
         if (navigator.share) {
             navigator.share(data).catch(function () {});
