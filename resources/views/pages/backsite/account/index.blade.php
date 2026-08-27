@@ -30,7 +30,7 @@
                             <div class="row">
                                 <div class="col-md-6">
                                     <div class="card-body">
-                                        <a href="{{ route('homepage') }}" class="btn btn-danger mb-3"><i class="fas fa-backward"></i>
+                                        <a href="{{ route('dashboard') }}" class="btn btn-danger mb-3"><i class="fas fa-backward"></i>
                                             Kembali</a>
                                         <div class="form-group">
                                             <label for="nama">Nama</label>
