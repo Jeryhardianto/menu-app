@@ -77,7 +77,7 @@
                     <!-- small box -->
                     <div class="small-box bg-warning">
                         <div class="inner">
-                            <h3>Rp. {{ Number::format($totalPendapatan, locale: 'de') }}</h3>
+                            <h3>{{ Rupiah($totalPendapatan) }}</h3>
 
                             <p>Total Pendapatan</p>
                         </div>

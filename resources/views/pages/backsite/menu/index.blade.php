@@ -58,7 +58,7 @@
                                         <td>{{ $loop->iteration }}</td>
                                         <td>{{ $mn->nama_menu }}</td>
                                         <td>{{ $mn->GetSubkategori ->subketagori}}</td>
-                                        <td>Rp. {{ Number::format($mn->harga, locale: 'de') }}</td>
+                                        <td>{{ Rupiah($mn->harga) }}</td>
                                         <td>{{ $mn->deskripsi }}</td>
                                         <td>
                                             {{-- <img src="{{ env('AWS_URL') }}{{ $mn->gambar }}" width="200" alt="{{ $mn->nama_menu }}"> --}}

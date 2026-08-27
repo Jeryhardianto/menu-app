@@ -88,7 +88,7 @@
                                             </td>
                                             <td>{{ $order->pengguna->nama }}</td>
                                             <td>{{ $order->pengguna->alamat }}</td>
-                                            <td>Rp. {{ Illuminate\Support\Number::format($order->total,  locale: 'de') }}</td>
+                                            <td>{{ Rupiah($order->total) }}</td>
                                             <td>
 
                                                 @if ($order->statusLabel->status == 'PENDING')

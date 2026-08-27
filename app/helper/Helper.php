@@ -21,13 +21,13 @@ if(!function_exists('set_active')) {
 
 
 if (!function_exists('Rupiah')) {
+    /**
+     * Format rupiah tanpa bergantung pada data locale ICU. Image PHP di server
+     * hanya punya locale root, jadi NumberFormatter('id_ID') keluar "IDR 28,000".
+     */
     function Rupiah($amount)
     {
-        $formatter = new NumberFormatter('id_ID', NumberFormatter::CURRENCY);
-        $formatter->setTextAttribute(NumberFormatter::CURRENCY_CODE, 'IDR');
-        $formatter->setAttribute(NumberFormatter::FRACTION_DIGITS, 0);
-
-        return $formatter->format($amount);
+        return 'Rp ' . number_format((int) $amount, 0, ',', '.');
     }
 }
 
