@@ -43,6 +43,19 @@ return [
             'foreign_key_constraints' => env('DB_FOREIGN_KEYS', true),
         ],
 
+        /*
+         * Koneksi khusus test. Sengaja tidak memakai env() sama sekali:
+         * docker-compose menaruh DB_DATABASE di $_SERVER, dan nilai itu
+         * mengalahkan <env force="true"> milik PHPUnit, sehingga RefreshDatabase
+         * pernah menjalankan migrate:fresh di database dev.
+         */
+        'testing' => [
+            'driver' => 'sqlite',
+            'database' => ':memory:',
+            'prefix' => '',
+            'foreign_key_constraints' => true,
+        ],
+
         'mysql' => [
             'driver' => 'mysql',
             'url' => env('DATABASE_URL'),
