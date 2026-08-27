@@ -37,7 +37,6 @@
 
  {{-- Dist --}}
   <script src="{{ asset('assets/backsite/dist/js/adminlte.js') }}"></script>
-  <script src="{{ asset('assets/backsite/dist/js/pages/dashboard.js') }}"></script>
   {{-- End Dist --}}
   {{-- Jquery Mask --}}
   <script src="{{ asset('jquery.mask.js') }}"></script>
